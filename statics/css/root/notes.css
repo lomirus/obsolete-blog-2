@@ -1,0 +1,20 @@
+article{
+    margin:80px auto;
+    background-color: #f3f5f7;
+    padding:10px 30px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 800ms ease 0s;
+}
+article>p, article>footer>*{
+    margin: 8px
+}
+article>footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    color: #a3a3a3;
+}
+article:hover{
+    box-shadow: 10px 10px 20px #ccc;
+}

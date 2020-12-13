@@ -1,0 +1,39 @@
+body{
+    margin: 0;
+}
+#main{
+    margin:0 auto;
+    padding-top: 20vh;
+}
+#editor{
+    margin:auto;
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    justify-content: center;
+}
+#editor>textarea{
+    display: block;
+    padding: 20px;
+    border: solid 1px #e0e0e0;
+    background-color: #fafafa;
+    font-size: 18px;
+    resize: none;
+    outline: none;
+    transition: all ease 300ms 0ms;
+}
+#editor>button{
+    border: solid 1px #efefef;
+    cursor: pointer;
+    outline: none;
+    transition: all ease 300ms 0ms;
+}
+#editor>textarea:hover{
+    border-color: #3090e4;
+}
+#editor>button:hover{
+    color: #3090e4;
+    border-color: #3090e4;
+}
+#editor>textarea:focus{
+    border-color: #e0e0e0;
+}

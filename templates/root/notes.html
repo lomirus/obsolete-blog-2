@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <link rel="stylesheet" href="/statics/css/main.css">
+    <link rel="stylesheet" href="/statics/css/root/notes.css">
+    <script src="/statics/js/root/notes.js"></script>
+    <script src="/statics/js/sidebar.js"></script>
+    <script src="/statics/js/main.js"></script>
+</head>
+<body>
+<header>
+    <div id="showSidebar">Sidebar</div>
+</header>
+<div id="sidebar">
+    <nav>
+        <a href="/?showSidebar=true">札记</a>
+        <a href="/notes?showSidebar=true">只言</a>
+        <a href="/about?showSidebar=true">关于</a>
+    </nav>
+</div>
+<div id="mask"></div>
+<div id="main">
+    <!--<article>
+        <p></p>
+        <footer class="info">
+            <p><time></time></p>
+            <p></p>
+        </footer>
+    </article>-->
+</div>
+<script>
+    initSidebar()
+    initNotes()
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notice</title>
+    <link rel="stylesheet" href="/statics/css/main.css">
+    <link rel="stylesheet" href="/statics/css/root/about.css">
+    <script src="/statics/js/root/about.js"></script>
+    <script src="/statics/js/sidebar.js"></script>
+    <script src="/statics/js/main.js"></script>
+</head>
+<body>
+<header>
+    <div id="showSidebar">Sidebar</div>
+</header>
+<div id="sidebar">
+    <nav>
+        <a href="/?showSidebar=true">札记</a>
+        <a href="/notes?showSidebar=true">只言</a>
+        <a href="/about?showSidebar=true">关于</a>
+    </nav>
+</div>
+<div id="mask"></div>
+<div id="main">
+<section id="notice">
+    <h3>Notice</h3>
+    <p>进入文章界面后你会发现封面上有四个框框</p>
+    <p>上框框点击可返回主页，下框框点击可平滑滚动至正文，左右二框分别是前往前（后）一篇文章</p>
+    <p>接下来的计划依旧在左方的的更新日志里，欲了解详情请点击<-</p>
+    <p>btw本站的favicon.ico是随机的，主要有4个(概率各为25/101)，还有一个概率为1/101的小彩蛋</p>
+</section>
+<section id="blogroll">
+    <h3>Blogroll</h3>
+    <div>
+        <a href="http://wuhaoda.life/" target="_blank">辇道增七的小站</a>
+        <a href="https://github.com/lomirus" target="_blank">Anon's Github</a>
+    </div>
+</section>
+</div>
+<script>
+    updateWidth()
+    initSidebar()
+</script>
+</body>
+</html>

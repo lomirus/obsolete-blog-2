@@ -1,0 +1,242 @@
+@font-face {
+    font-family: 'Noto Serif';
+    src: url('/statics/fonts/NotoSerifSC-Regular.woff2') format('woff2'),
+    url('/statics/fonts/NotoSerifSC-Regular.woff') format('woff'),
+    url('/statics/fonts/NotoSerifSC-Regular.eot') format('embedded-opentype');
+}
+body{
+    margin:0;
+    font-family: 'Noto Serif', serif;
+    font-size: 18px;
+}
+::selection{
+    color:#fff;
+    background-color: #ff4081;
+}
+#cover{
+    color:white;
+    background-size: cover !important;
+    height: 100vh;
+    background-position: center;
+}
+#cover h1{
+    padding-top:24vh;
+    padding-left:12vw;
+    padding-right:12vw;
+    margin:0;
+    font-size: 54px;
+    text-shadow: 2px 2px black;
+}
+#cover div#time{
+    right: 18vw;
+    bottom: 12vh;
+    position: absolute;
+    font-style: italic;
+    text-shadow: 1px 1px black;
+}
+#cover div#mask{
+    position: absolute;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+#cover div#mask div#left{
+    grid-row: 1 / 3
+}
+#cover div#mask div#up{
+    grid-row: 1 / 2;
+    grid-column:2 / 3;
+}
+#cover div#mask div#right{
+    grid-row: 1 / 3;
+}
+#cover div#mask div{
+    transition: background-color ease 200ms 0s;
+}
+#cover div#mask div a{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+#cover div#mask div:hover{
+    background: rgba(0,0,0,0.3);
+}
+div#imgMask{
+    display: none;
+    position: fixed;
+    width:100vw;
+    top:0;
+    bottom:0;
+    background-color: rgba(0,0,0,0.5);
+}
+div#imgMask img{
+    display: block;
+    position: absolute;
+    margin:auto;
+    top:0;
+    bottom:0;
+    left: 0;
+    right:0;
+    max-width: 100vw;
+    max-height: 100vh;
+    width: auto;
+    height: auto;
+}
+/* Github Markdown Style Start*/
+div#content{
+    margin:40px auto 320px auto;
+    width: 960px;
+    line-height: 1.5;
+}
+div#content img{
+    display: block;
+    width:750px;
+    margin:30px auto;
+    border-radius: 8px;
+    border: solid #eee 2px;
+}
+div#content a{
+    color:#0366d6;
+    text-decoration: none;
+}
+div#content a:hover{
+    text-decoration: underline;
+}
+div#content code{
+    padding:0.2em 0.4em;
+    border-radius:6px;
+}
+div#content :not(pre)>code{
+    background-color: rgba(27,31,35,0.05);
+    /*font-size: 14px;*/
+    margin:0 2px
+}
+div#content pre{
+    border-radius:6px
+}
+div#content pre code{
+    padding:16px;
+    font-family: Consolas, serif;
+}
+div#content blockquote{
+    margin:18px 30px;
+    border-left:solid 6px #DFE2E5
+}
+div#content blockquote p{
+    margin:18px 20px;
+    color: #777777
+}
+/* Github Markdown Style End*/
+/* Comment Style Start*/
+#comment{
+    margin: 40px auto 320px auto;
+    width: 960px;
+}
+#newComment{
+    display: grid;
+    grid-template-columns: 50px auto 150px;
+    grid-template-rows: 50px 200px;
+}
+#newComment>textarea{
+    display: block;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    padding: 20px;
+    border: solid 1px #e0e0e0;
+    background-color: #fafafa;
+    font-size: 18px;
+    resize: none;
+    outline: none;
+    transition: all ease 300ms 0ms;
+}
+#newComment>input{
+    font-family: 'Noto Serif', serif;
+    font-size: 20px;
+    border: solid 1px #e0e0e0;
+    background-color: #fafafa;
+    min-width: 24px;
+    padding: 0 12px;
+    outline: none;
+    transition: all ease 300ms 0ms;
+}
+#newComment>button{
+    border: solid 1px #efefef;
+    cursor: pointer;
+    outline: none;
+    transition: all ease 300ms 0ms;
+}
+#newComment>img{
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+#newComment>input:hover{
+    border-color: #3090e4;
+}
+#newComment>textarea:hover{
+    border-color: #3090e4;
+}
+#newComment>button:hover{
+    color: #3090e4;
+    border-color: #3090e4;
+}
+#newComment>input:focus{
+    border-color: #e0e0e0;
+}
+#newComment>textarea:focus{
+    border-color: #e0e0e0;
+}
+
+
+.comment{
+    display: flex;
+    margin:30px auto;
+}
+.comment>.avatar{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: solid #f5f5f5 1px;
+    padding: 3px;
+    margin: 12px;
+    user-select: none;
+}
+.comment>.main>.info>.username{
+    margin-right: 15px;
+    font-size: 15px;
+}
+.comment>.main>.info>.time{
+    color: #b3b3b3;
+    font-size: 15px;
+}
+.comment>.main>p{
+    margin: 15px 0;
+    font-size: 16px;
+}
+.comment>.main>.operation>span{
+    margin-right: 15px;
+    display: inline-block;
+    transition: all ease 240ms 0ms;
+}
+.comment>.main>.operation>.likes{
+    user-select: none;
+}
+.comment>.main>.operation>.likes:after{
+    content: attr(likes);
+}
+.comment>.main>.operation>.pro{
+    cursor: pointer;
+    user-select: none;
+}
+.comment>.main>.operation>.con{
+    cursor: pointer;
+    user-select: none;
+}
+.comment>.main>.operation>span:hover{
+    transform: scale(1.2);
+}
+/* Comment Style End*/

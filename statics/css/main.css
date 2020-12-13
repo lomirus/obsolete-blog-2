@@ -1,0 +1,79 @@
+@font-face {
+    font-family: 'Noto Serif';
+    src: url('/statics/fonts/NotoSerifSC-Regular.woff2') format('woff2'),
+    url('/statics/fonts/NotoSerifSC-Regular.woff') format('woff'),
+    url('/statics/fonts/NotoSerifSC-Regular.eot') format('embedded-opentype');
+}
+body{
+    margin:0;
+    font-family: 'Noto Serif', serif;
+    background-color: #e3e5e7;
+}
+::selection{
+    color:#fff;
+    background-color: #ff4081;
+}
+
+header{
+    position: fixed;
+    z-index: 4;
+    top:0;
+    left: 0;
+    right: 0;
+    background-color: #f3f5f7;
+    height:80px;
+    box-shadow:  rgba(0,0,0,0.2) 0 0 24px;
+    user-select: none;
+}
+#sidebar{
+    position: fixed;
+    top: 80px;
+    bottom: 0;
+    z-index: 3;
+    background-color: #eaecee;
+    width: 280px;
+    user-select: none;
+    transition: all 300ms 0ms ease;
+}
+#sidebar>nav{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin:12px 0;
+}
+#sidebar>nav>a{
+    margin: 0;
+    padding:24px;
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+    text-align: center;
+    transition: all 300ms 0ms ease;
+    cursor: pointer;
+}
+#sidebar>nav>a:hover{
+    background-color: #d3d5d7;
+}
+header>#showSidebar{
+    width: 200px;
+    text-align: center;
+    font-size: 24px;
+    line-height: 80px;
+    cursor: pointer;
+}
+#main{
+    position: absolute;
+    top:80px;
+    left: 0;
+    right:0;
+    z-index: 1;
+}
+#mask{
+    position: fixed;
+    background-color: rgba(0,0,0,0.1);
+    top:80px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+}

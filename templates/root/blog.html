@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <link rel="stylesheet" href="/statics/css/root/blog.css">
+    <link rel="stylesheet" href="/statics/css/highlight/night-owl.css">
+    <script src="/statics/js/highlight.min.js"></script>
+    <script src="/statics/js/root/blog.js"></script>
+    <script src="/statics/js/main.js"></script>
+    <script>
+        const maxBlogId = {{.maxId}}
+        window.onresize = updateWidth
+    </script>
+</head>
+<body>
+<div id="cover" style="background-image:url('/statics/images/blog/cover/{{.id}}.webp');">
+    <h1>{{.title}}</h1>
+    <div id="time">
+    <p><span>Created at </span><time>{{.creationTime}}</time></p>
+    <p><span>Last Modified at </span><time>{{.modifiedTime}}</time></p>
+    </div>
+    <div id="mask">
+        <div id="left"></div>
+        <div id="up"><a href="/"></a></div>
+        <div id="right"></div>
+        <div id="down"></div>
+    </div>
+</div>
+<div id="content">{{.content}}</div>
+<div id="imgMask"><img></div>
+<div id="comment">
+    <div id="newComment">
+        <img src="https://pic1.zhimg.com/aadd7b895_xs.jpg" />
+        <input type="text" placeholder="Anonymous">
+        <button>Submit</button>
+        <textarea placeholder="Input your comment here..."></textarea>
+    </div>
+    <div id="comments"></div>
+</div>
+<script>
+    hljs.initHighlightingOnLoad();
+    initImages()
+    initHeader()
+    initComments()
+    initCommentBlock()
+    updateWidth()
+</script>
+
+</body>
+</html>
