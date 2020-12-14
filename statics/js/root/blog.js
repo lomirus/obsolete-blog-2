@@ -129,9 +129,12 @@ function submitComment(){
                 const commentsDOM = document.querySelector('div#comments')
                 commentsJSON.push(commentJSON)
                 commentsDOM.appendChild(createComment(commentsJSON.length - 1))
-                Notification.requestPermission( function(status) {
-                    new Notification("You've sent your comment", {body: text}); // 显示通知
-                });
+                Notification.requestPermission().then(function(permission){
+                    if (permission === 'granted')
+                        new Notification("You've sent your comment", {body: text}); // 显示通知
+                    else if (permission === 'denied')
+                        alert("You've sent your comment."); // 显示通知
+                })
             }})
     }
 
