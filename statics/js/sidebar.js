@@ -1,35 +1,20 @@
+let sidebarButton, sidebar, mask
+
 function initSidebar(){
-    const showSidebar = document.querySelector("#showSidebar")
-    const sidebar = document.querySelector("#sidebar")
-    const mask = document.querySelector("#mask")
-    if(getQuery('showSidebar') === 'true'){
-        sidebar.style.left = '0px'
-        sidebar.style.boxShadow = 'rgba(0,0,0,0.2) 20px 0 20px'
-        mask.style.display = 'block'
-    } else if(getQuery('showSidebar') === 'false' || getQuery('showSidebar') === undefined){
-        sidebar.style.left = '-300px'
-        sidebar.style.boxShadow = 'none'
-        mask.style.display = 'none'
+    sidebarButton = document.querySelector("#showSidebar")
+    sidebar = document.querySelector("#sidebar")
+    mask = document.querySelector("#mask")
+    switch(getQuery('showSidebar')){
+        case 'true': showSidebar();break;
+        default: hideSidebar();break;
     }
-    showSidebar.addEventListener('click', function(){
-        if(getQuery('showSidebar') === 'true'){
-            sidebar.style.left = '-300px'
-            sidebar.style.boxShadow = 'none'
-            putQuery({"showSidebar":"false"})
-            mask.style.display = 'none'
-        } else if(getQuery('showSidebar') === 'false' || getQuery('showSidebar') === undefined){
-            sidebar.style.left = '0px'
-            sidebar.style.boxShadow = 'rgba(0,0,0,0.2) 20px 0 20px'
-            putQuery({"showSidebar":"true"})
-            mask.style.display = 'block'
+    sidebarButton.addEventListener('click', function(){
+        switch(getQuery('showSidebar')){
+            case 'true': hideSidebar();break;
+            default: showSidebar();break;
         }
     })
-    mask.addEventListener('click', function(){
-        sidebar.style.left = '-300px'
-        sidebar.style.boxShadow = 'none'
-        putQuery({"showSidebar":"false"})
-        mask.style.display = 'none'
-    })
+    mask.addEventListener('click', hideSidebar)
 }
 function getQuery(key){
     let query = {}
@@ -45,10 +30,26 @@ function getQuery(key){
     }
 }
 function putQuery(map){
-    let query = '?'
-    for(let i in map){
-        query += i + '=' + map[i] + '&'
+    if(map === undefined || map === {}){
+        history.replaceState(null, null, location.pathname)
+    } else {
+        let query = '?'
+        for(let i in map){
+            query += i + '=' + map[i] + '&'
+        }
+        query = query.slice(0, -1)
+        history.replaceState(null, null, location.pathname + query)
     }
-    query = query.slice(0, -1)
-    history.replaceState(null, null, location.pathname + query)
+}
+function showSidebar(){
+    sidebar.style.left = '0px'
+    sidebar.style.boxShadow = 'rgba(0,0,0,0.2) 20px 0 20px'
+    mask.style.display = 'block'
+    putQuery({"showSidebar":"true"})
+}
+function hideSidebar(){
+    sidebar.style.left = '-300px'
+    sidebar.style.boxShadow = 'none'
+    mask.style.display = 'none'
+    putQuery()
 }

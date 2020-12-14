@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"server/module/constant"
 )
 
 type Blog struct {
@@ -119,7 +120,7 @@ func SetCookie() gin.HandlerFunc {
 			c.String(http.StatusOK, "value cannot be empty")
 			return
 		}
-		c.SetCookie(name, value, 864000000, "/", "localhost", false, true)
+		c.SetCookie(name, value, 864000000, "/", constant.Domain, false, true)
 		c.String(http.StatusOK, "set cookie successfully")
 	}
 }

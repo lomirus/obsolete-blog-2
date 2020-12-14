@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"server/module/constant"
 	"server/module/request"
 	"server/module/service"
 )
@@ -16,7 +17,8 @@ var admin *gin.RouterGroup
 
 func init() {
 	var err error
-	db, err = sql.Open("mysql", "root:0@tcp(localhost:3306)/server")
+	db, err = sql.Open("mysql",
+		"root:"+constant.DBPassword+"@tcp(localhost:3306)/server")
 	if err != nil {
 		log.Fatal(err)
 	}
