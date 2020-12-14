@@ -45,7 +45,8 @@ func main() {
 	ajax.GET("/util/setCookie", service.SetCookie())
 	admin.GET("/note/new", service.NewNote(db))
 	admin.GET("/note/alt", service.AltNote(db))
-	err := router.Run(":8080")
+	//err := router.Run(":8080")
+	err := router.RunTLS(":8080", "conf/anonym.ink_chain.crt", "conf/anonym.ink_key.key")
 	if err != nil {
 		log.Fatal(err)
 	}
