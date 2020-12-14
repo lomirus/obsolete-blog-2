@@ -13,7 +13,8 @@ import (
 type Note struct {
 	Id       int    `json:"id"`
 	Content  string `json:"content"`
-	Notetime string `json:"notetime"`
+	NoteTime string `json:"noteTime"`
+	NoteAddr string `json:"noteAddr"`
 }
 
 func GetBlogAll() gin.HandlerFunc {
@@ -107,13 +108,13 @@ func ConComment(db *sql.DB) gin.HandlerFunc {
 func GetNoteAll(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var notes []Note
-		row, err := db.Query("SELECT `id`, `content`, `notetime` FROM `notes`;")
+		row, err := db.Query("SELECT `id`, `content`, `note_time`, `note_addr` FROM `notes`;")
 		if err != nil {
 			log.Println(err)
 		}
 		for row.Next() {
 			var note Note
-			err = row.Scan(&note.Id, &note.Content, &note.Notetime)
+			err = row.Scan(&note.Id, &note.Content, &note.NoteTime, &note.NoteAddr)
 			if err != nil {
 				log.Println(err)
 			}
@@ -125,12 +126,80 @@ func GetNoteAll(db *sql.DB) gin.HandlerFunc {
 func NewNote(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var content = c.Query("content")
-		var notetime = time.Now().Format("2006-01-02 15:04:05")
-		_, err := db.Exec("INSERT INTO notes (content, notetime) VALUES (?,?);",
-			content, notetime)
+		if content == "" {
+			c.String(200, "\"content\" cannot be empty")
+			return
+		}
+		var noteAddr = c.Query("noteAddr")
+		if noteAddr == "" {
+			c.String(200, "\"noteAddr\" cannot be empty")
+			return
+		}
+		var noteTime = time.Now().Format("2006-01-02 15:04:05")
+		_, err := db.Exec("INSERT INTO notes (content, note_time,  note_addr) VALUES (?,?,?);",
+			content, noteTime, noteAddr)
 		if err != nil {
 			log.Println(err)
+			c.String(200, err.Error())
+		} else {
+			c.String(200, "New note was sent successfully")
 		}
-		c.String(200, "New note was sent successfully")
+	}
+}
+func AltNote(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var id = c.Query("id")
+		if id == "" {
+			c.String(200, "id cannot be empty")
+			return
+		}
+		var content = c.Query("content")
+		var noteAddr = c.Query("noteAddr")
+		var noteTime = c.Query("noteTime")
+		if noteAddr == "" || noteTime == "" || content == "" {
+			c.String(200, "one of \"noteAddr\", \"noteTime\" and \"content\" "+
+				"should not be empty at least")
+			return
+		}
+		if content != "" {
+			_, err := db.Exec("UPDATE notes SET `content`=? WHERE `id`=?;", content, id)
+			if err != nil {
+				c.String(200, err.Error())
+				return
+			}
+		}
+		if noteAddr != "" {
+			_, err := db.Exec("UPDATE notes SET `note_addr`=? WHERE `id`=?;", noteAddr, id)
+			if err != nil {
+				c.String(200, err.Error())
+				return
+			}
+		}
+		if noteTime != "" {
+			_, err := db.Exec("UPDATE notes SET `note_time`=? WHERE `id`=?;", noteTime, id)
+			if err != nil {
+				c.String(200, err.Error())
+				return
+			}
+		}
+		c.String(200, "Note was altered successfully")
+	}
+}
+func VerifyAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		key, err := c.Cookie("key")
+		if err != nil {
+			c.String(http.StatusOK, "Here's no flag.\nAll hackers leave please.")
+			c.Abort()
+			return
+		}
+		if key == "aJsq743EfRt1YWu9vSmzgi5PyBlrwUThekp8cQH0V6ojdAMn" {
+			c.Next()
+			return
+		} else {
+			c.String(http.StatusOK, "Here's no flag.\nAll hackers leave please.")
+			c.Abort()
+			return
+		}
 	}
 }

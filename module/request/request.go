@@ -75,9 +75,3 @@ func Notes() gin.HandlerFunc {
 		c.HTML(200, "notes.html", nil)
 	}
 }
-
-func AdminNote() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.HTML(200, "note.html", nil)
-	}
-}

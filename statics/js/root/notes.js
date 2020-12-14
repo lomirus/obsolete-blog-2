@@ -15,11 +15,11 @@ function initNotes(){
     //加载所有评论
     ajaxReq({
         method: 'GET',
-        url:'/admin/note/getAll',
+        url:'/ajax/note/getAll',
         handleFunc:function(req){
             const notesDOM = document.querySelector('div#main')
             notesJSON = JSON.parse(req.response)
-            notesJSON.forEach( (v,i) => notesDOM.appendChild(createNote(i)))
+            notesJSON.forEach( (v,i) => notesDOM.appendChild(createNote(notesJSON.length - i - 1)))
             updateWidth()
         }
     })
@@ -28,23 +28,22 @@ function createNote(index){
     let note = document.createElement('article')
     let content = document.createElement('p')
     let info = document.createElement('footer')
-    let notetime = document.createElement('p')
-    let innertime = document.createElement('time')
-    let address = document.createElement('p')
+    let noteTime = document.createElement('p')
+    let innerTime = document.createElement('time')
+    let noteAddr = document.createElement('p')
 
     info.setAttribute('class', 'info')
 
 
     content.innerText = notesJSON[index].content
-    innertime.innerText = notesJSON[index].notetime
-    address.innerText = "Chongqing"
+    innerTime.innerText = notesJSON[index].noteTime
+    noteAddr.innerText = notesJSON[index].noteAddr
 
-    notetime.appendChild(innertime)
-    info.appendChild(notetime)
-    info.appendChild(address)
+    noteTime.appendChild(innerTime)
+    info.appendChild(noteTime)
+    info.appendChild(noteAddr)
     note.appendChild(content)
     note.appendChild(info)
-
 
     return note
 }

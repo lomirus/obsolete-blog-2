@@ -3,10 +3,13 @@ package service
 import (
 	"bufio"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
 	"io"
 	"log"
+	"net/http"
 	"os"
+	"runtime"
 )
 
 type Blog struct {
@@ -28,6 +31,13 @@ type Comment struct {
 
 func GetBlog(blogId int, getPreview bool) (blog Blog) {
 	const preLen = 200
+	var rn int
+	if runtime.GOOS == "linux" {
+		rn = 1 // \n
+	} else if runtime.GOOS == "windows" {
+		rn = 2 // \r\n
+	}
+
 	filePath := fmt.Sprintf("statics/md/blog/%d.md", blogId)
 	inputFile, inputErr := os.Open(filePath)
 	if inputErr != nil {
@@ -40,7 +50,7 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 	var readString string
 	//获取标题
 	readString, _ = fileReader.ReadString('\n')
-	blog.Title = readString[2 : len(readString)-2]
+	blog.Title = readString[2 : len(readString)-rn]
 	//读取一次回车
 	_, _ = fileReader.ReadString('\n')
 	//获取创建时间
@@ -66,9 +76,10 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 				break
 			}
 			//判断是否为段落标题或空行
-			if fileString[0] != '#' && fileString[0] != '\r' && fileString[0:2] != "![" {
-				//[0:len(fileString)-2] 是为了删除回车
-				blog.Preview += fileString[0:len(fileString)-2] + " "
+			if fileString[0] != '#' && fileString[0] != '\r' && fileString[0] != '\n' {
+				if len(fileString) > 2 && fileString[0:2] != "![" {
+					blog.Preview += fileString[0:len(fileString)-rn] + " "
+				}
 			}
 		}
 		rPreview := []rune(blog.Preview)
@@ -95,4 +106,20 @@ func GetBlogNumber() (blogNum int) {
 		}
 	}
 	return blogNum - 1
+}
+func SetCookie() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		name := c.Query("name")
+		if name == "" {
+			c.String(http.StatusOK, "name cannot be empty")
+			return
+		}
+		value := c.Query("value")
+		if value == "" {
+			c.String(http.StatusOK, "value cannot be empty")
+			return
+		}
+		c.SetCookie(name, value, 864000000, "/", "localhost", false, true)
+		c.String(http.StatusOK, "set cookie successfully")
+	}
 }
