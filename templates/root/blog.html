@@ -4,18 +4,36 @@
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.title}}</title>
     <link rel="stylesheet" href="/statics/css/root/blog.css">
+    <link rel="stylesheet" href="/statics/css/main.css">
     <link rel="stylesheet" href="/statics/css/highlight/night-owl.css">
     <script src="/statics/js/highlight.min.js"></script>
     <script src="/statics/js/root/blog.js"></script>
     <script src="/statics/js/main.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js"></script>
+    <script src="/statics/js/sidebar.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+          integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+            integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+            crossorigin="anonymous"></script>
     <script>
         const maxBlogId = {{.maxId}}
-        window.onresize = updateWidth
+        window.onresize = updateLayout
     </script>
 </head>
 <body>
+<header>
+    <div id="showSidebar">Sidebar</div>
+</header>
+<div id="sidebar">
+    <nav>
+        <a href="/?showSidebar=true">札记</a>
+        <a href="/notes?showSidebar=true">只言</a>
+        <a href="/about?showSidebar=true">关于</a>
+    </nav>
+</div>
+<div id="mask"></div>
+<div id="main">
 <div id="cover" style="background-image:url('/statics/images/blog/cover/{{.id}}.webp');">
     <h1>{{.title}}</h1>
     <div id="time">
@@ -33,12 +51,13 @@
 <div id="imgMask"><img></div>
 <div id="comment">
     <div id="newComment">
-        <img src="https://pic1.zhimg.com/aadd7b895_xs.jpg" />
+        <img src="https://pic1.zhimg.com/v2-73868f138ce31170fcf8a84ea73ba9d2_b.jpg" />
         <input type="text" placeholder="Anonymous">
         <button>Submit</button>
         <textarea placeholder="Input your comment here..."></textarea>
     </div>
     <div id="comments"></div>
+</div>
 </div>
 <script>
     hljs.initHighlightingOnLoad();
@@ -46,9 +65,10 @@
     initFormulas()
     initImages()
     initHeader()
+    initSidebar()
     initComments()
-    initCommentBlock()
-    updateWidth()
+    initCommentEditor()
+    updateLayout()
 </script>
 
 </body>

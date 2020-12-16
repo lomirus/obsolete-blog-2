@@ -1,7 +1,7 @@
 const maxContentWidth = 960
 const minContentMargin = 20
 const imgThresholdWidth = 540
-function updateWidth(){
+function updateLayout(){
     const clientWidth = document.body.clientWidth
     const blogs = document.querySelector("#blogs")
     const articles = document.querySelectorAll('article')
@@ -50,4 +50,4 @@ function initBlogs(res){
     }
 }
 
-window.addEventListener('resize', updateWidth)
+window.addEventListener('resize', updateLayout)

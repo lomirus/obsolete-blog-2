@@ -1,6 +1,6 @@
 const maxContentWidth = 720
 const minContentMargin = 80
-function updateWidth(){
+function updateLayout(){
     const clientWidth = document.body.clientWidth
     const sections = document.querySelectorAll("section")
     sections.forEach(section => {
@@ -10,4 +10,4 @@ function updateWidth(){
             section.style.width = maxContentWidth + "px"
     })
 }
-window.addEventListener('resize', updateWidth)
+window.addEventListener('resize', updateLayout)

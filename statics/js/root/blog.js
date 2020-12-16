@@ -1,24 +1,38 @@
-const maxClientWidth = 960
+const maxClientWidth = 880
 const maxImageWidth = 720
-const minContentMargin = 20
+const maxContentPadding = 40
+const minContentPadding = 20
 const blog_id = parseInt(location.pathname.slice(6))
 let commentsJSON
 
-function updateWidth(){
+function updateLayout(){
     let clientWidth = document.body.clientWidth
-    let images = document.querySelectorAll("#content img")
-    if(clientWidth < maxClientWidth + minContentMargin){
-        document.querySelector("#content").style.width = (clientWidth-minContentMargin) + "px"
-        document.querySelector("#comment").style.width = (clientWidth-minContentMargin) + "px"
-        if (clientWidth < maxImageWidth + minContentMargin)
-            images.forEach(v => v.style.width = (clientWidth-minContentMargin) + "px")
-        else
-            images.forEach(v => v.style.width = maxImageWidth + "px")
-    } else {
-        document.querySelector("#content").style.width = maxClientWidth + "px"
-        document.querySelector("#comment").style.width = maxClientWidth + "px"
+    const images = document.querySelectorAll("#content img")
+    const content = document.querySelector("#content")
+    const comment = document.querySelector("#comment")
+
+    if(clientWidth > maxClientWidth + maxContentPadding * 2){
+        content.style.width = maxClientWidth + "px"
+        comment.style.width = maxClientWidth + "px"
+        content.style.padding = maxContentPadding + "px"
+        comment.style.padding = maxContentPadding + "px"
         images.forEach(v => v.style.width = maxImageWidth + "px")
+    } else if(clientWidth > maxClientWidth + minContentPadding * 2){
+        content.style.width = maxClientWidth + "px"
+        comment.style.width = maxClientWidth + "px"
+        content.style.padding = (clientWidth - maxClientWidth)/2 + "px"
+        comment.style.padding = (clientWidth - maxClientWidth)/2 + "px"
+    } else {
+        content.style.width = (clientWidth - minContentPadding*2) + "px"
+        comment.style.width = (clientWidth - minContentPadding*2) + "px"
+        content.style.padding = minContentPadding + "px"
+        comment.style.padding = minContentPadding + "px"
     }
+
+    if (clientWidth > maxImageWidth + minContentPadding*2)
+        images.forEach(v => v.style.width = maxImageWidth + "px")
+    else
+        images.forEach(v => v.style.width = (clientWidth-minContentPadding*2) + "px")
 }
 
 function initFormulas(){
@@ -92,11 +106,15 @@ function initComments(){
         handleFunc:function(req){
             const commentsDOM = document.querySelector('div#comments')
             commentsJSON = JSON.parse(req.response)
-            commentsJSON.forEach( (v,i) => commentsDOM.appendChild(createComment(i)))
+            if(commentsJSON.length === 0){
+                commentsDOM.style.display = "none"
+            } else {
+                commentsJSON.forEach( (v,i) => commentsDOM.appendChild(createComment(i)))
+            }
         }
     })
 }
-function initCommentBlock(){
+function initCommentEditor(){
     //初始化提交评论功能
     const newCommentButton = document.querySelector('div#newComment>button')
     newCommentButton.addEventListener('click',submitComment)
@@ -143,6 +161,7 @@ function submitComment(){
                 const commentsDOM = document.querySelector('div#comments')
                 commentsJSON.push(commentJSON)
                 commentsDOM.appendChild(createComment(commentsJSON.length - 1))
+                commentsDOM.style.display = "block"
                 Notification.requestPermission().then(function(permission){
                     if (permission === 'granted')
                         new Notification("You've sent your comment", {body: text}); // 显示通知
