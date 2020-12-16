@@ -21,6 +21,20 @@ function updateWidth(){
     }
 }
 
+function initFormulas(){
+    const formulas = document.querySelectorAll(".language-math")
+    formulas.forEach(function(v){
+        v.parentElement.setAttribute("class", "language-math-wrap")
+        katex.render(v.innerText, v);
+    })
+    const codes = document.querySelectorAll("code")
+    codes.forEach(function(v){
+        if(v.innerText.slice(0,2) === "$$"){
+            v.setAttribute("class", "language-math")
+            katex.render(v.innerText.slice(2), v);
+        }
+    })
+}
 function initImages(){
     const images = document.querySelectorAll("div#content img")
     const imgMask = document.querySelector("div#imgMask")

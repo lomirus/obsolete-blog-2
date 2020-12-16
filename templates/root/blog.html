@@ -8,6 +8,8 @@
     <script src="/statics/js/highlight.min.js"></script>
     <script src="/statics/js/root/blog.js"></script>
     <script src="/statics/js/main.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.js"></script>
     <script>
         const maxBlogId = {{.maxId}}
         window.onresize = updateWidth
@@ -40,6 +42,8 @@
 </div>
 <script>
     hljs.initHighlightingOnLoad();
+
+    initFormulas()
     initImages()
     initHeader()
     initComments()

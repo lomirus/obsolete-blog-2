@@ -130,6 +130,10 @@ div#content blockquote p{
     margin:18px 20px;
     color: #777777
 }
+div#content .language-math-wrap{
+    display: flex;
+    justify-content: center;
+}
 /* Github Markdown Style End*/
 /* Comment Style Start*/
 #comment{
