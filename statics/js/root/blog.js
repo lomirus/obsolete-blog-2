@@ -1,39 +1,10 @@
-const maxClientWidth = 880
-const maxImageWidth = 720
-const maxContentPadding = 40
-const minContentPadding = 20
 const blog_id = parseInt(location.pathname.slice(6))
 let beforePageYOffset // used to calc the scroll orientation
 let commentsJSON
 
-function updateLayout(){
-    let clientWidth = document.body.clientWidth
-    const images = document.querySelectorAll("#content img")
-    const content = document.querySelector("#content")
-    const comment = document.querySelector("#comment")
-
-    if(clientWidth > maxClientWidth + maxContentPadding * 2){
-        content.style.width = maxClientWidth + "px"
-        comment.style.width = maxClientWidth + "px"
-        content.style.padding = maxContentPadding + "px"
-        comment.style.padding = maxContentPadding + "px"
-        images.forEach(v => v.style.width = maxImageWidth + "px")
-    } else if(clientWidth > maxClientWidth + minContentPadding * 2){
-        content.style.width = maxClientWidth + "px"
-        comment.style.width = maxClientWidth + "px"
-        content.style.padding = (clientWidth - maxClientWidth)/2 + "px"
-        comment.style.padding = (clientWidth - maxClientWidth)/2 + "px"
-    } else {
-        content.style.width = (clientWidth - minContentPadding*2) + "px"
-        comment.style.width = (clientWidth - minContentPadding*2) + "px"
-        content.style.padding = minContentPadding + "px"
-        comment.style.padding = minContentPadding + "px"
-    }
-
-    if (clientWidth > maxImageWidth + minContentPadding*2)
-        images.forEach(v => v.style.width = maxImageWidth + "px")
-    else
-        images.forEach(v => v.style.width = (clientWidth-minContentPadding*2) + "px")
+function updateHeader(){
+    window.pageYOffset > beforePageYOffset ? hideHeader() : showHeader()
+    beforePageYOffset = window.pageYOffset
 }
 
 function initFormulas(){
@@ -65,7 +36,7 @@ function initImages(){
         imgMask.style.display = 'none'
     })
 }
-function initHeader(){
+function initCover(){
     const down = document.querySelector("div#down")
     const left = document.querySelector("div#left")
     const right = document.querySelector("div#right")
@@ -132,15 +103,12 @@ function initBlog(){
     hljs.initHighlightingOnLoad();
     initFormulas()
     initImages()
-    initHeader()
+    initCover()
     initSidebar()
     initComments()
     initCommentEditor()
-    updateLayout()
-    window.addEventListener('scroll',() => {
-        window.pageYOffset > beforePageYOffset ? hideHeader(): showHeader()
-        beforePageYOffset = window.pageYOffset
-    })
+    updateHeader()
+    window.onscroll = updateHeader
 }
 
 function submitComment(){

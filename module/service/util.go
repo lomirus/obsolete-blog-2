@@ -31,12 +31,12 @@ type Comment struct {
 }
 
 func GetBlog(blogId int, getPreview bool) (blog Blog) {
-	const preLen = 200
-	var rn int
+	const preLen = 320
+	var endLen int
 	if runtime.GOOS == "linux" {
-		rn = 1 // \n
+		endLen = 1 // \n
 	} else if runtime.GOOS == "windows" {
-		rn = 2 // \r\n
+		endLen = 2 // \r\n
 	}
 
 	filePath := fmt.Sprintf("statics/md/blog/%d.md", blogId)
@@ -51,7 +51,7 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 	var readString string
 	//获取标题
 	readString, _ = fileReader.ReadString('\n')
-	blog.Title = readString[2 : len(readString)-rn]
+	blog.Title = readString[2 : len(readString)-endLen]
 	//读取一次回车
 	_, _ = fileReader.ReadString('\n')
 	//获取创建时间
@@ -79,7 +79,7 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 			//判断是否为段落标题或空行
 			if fileString[0] != '#' && fileString[0] != '\r' && fileString[0] != '\n' {
 				if len(fileString) > 2 && fileString[0:2] != "![" {
-					blog.Preview += fileString[0:len(fileString)-rn] + " "
+					blog.Preview += fileString[0:len(fileString)-endLen] + " "
 				}
 			}
 		}

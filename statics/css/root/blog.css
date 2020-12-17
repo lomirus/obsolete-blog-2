@@ -4,14 +4,53 @@
     url('/statics/fonts/NotoSerifSC-Regular.woff') format('woff'),
     url('/statics/fonts/NotoSerifSC-Regular.eot') format('embedded-opentype');
 }
+@media screen and (min-width: calc(880px + 40px * 2)){
+    #content{
+        width: 880px;
+        padding: 40px;
+    }
+    #comment{
+        width:880px;
+        padding:40px;
+    }
+}
+@media screen and (min-width: calc(880px + 20px * 2)) and (max-width: calc(880px + 40px * 2)){
+    #content{
+        width: 880px;
+        padding: calc((100vw - 880px)/2);
+    }
+    #comment{
+        width:880px;
+        padding:calc((100vw - 880px)/2);
+    }
+}
+@media screen and (max-width: calc(880px + 20px * 2)){
+    #content{
+        width: calc(100vw - 20px * 2);
+        padding: 20px;
+    }
+    #comment{
+        width:calc(100vw - 20px * 2);
+        padding: 20px;
+    }
+}
+@media screen and (min-width: calc(720px + 20px * 2)){
+    #content img{
+        width: 720px;
+    }
+}
+@media screen and (max-width: calc(720px + 20px * 2)){
+    #content img{
+        width: calc((100vw - 20px * 2));
+    }
+}
 body{
     margin:0;
     font-family: 'Noto Serif', serif;
     font-size: 18px;
 }
-::selection{
-    color:#fff;
-    background-color: #ff4081;
+::-webkit-scrollbar{
+    display: none;
 }
 div#main{
     top:0
@@ -94,10 +133,20 @@ div#imgMask img{
     width: auto;
     height: auto;
 }
+button#listButton{
+    position: fixed;
+    width: 64px;
+    height: 64px;
+    bottom: 10vh;
+    right: 10vw;
+    border: none;
+    border-radius: 32px;
+    outline: none;
+    font-size: 24px;
+}
 /* Github Markdown Style Start*/
 div#content{
-    margin:40px auto 320px auto;
-    width: 960px;
+    margin:40px auto 240px auto;
     background-color: #fff;
     line-height: 1.5;
 }
@@ -111,7 +160,6 @@ div#content h6:hover:after{
 }
 div#content img{
     display: block;
-    width:750px;
     margin:30px auto;
     border-radius: 8px;
     border: solid #eee 2px;
@@ -154,8 +202,7 @@ div#content .language-math-wrap{
 /* Github Markdown Style End*/
 /* Comment Style Start*/
 #comment{
-    margin: 40px auto 320px auto;
-    width: 960px;
+    margin: 40px auto 120px auto;
 }
 #newComment{
     display: grid;

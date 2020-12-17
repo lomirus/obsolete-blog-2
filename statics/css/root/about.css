@@ -1,3 +1,13 @@
+@media screen and (max-width: calc(720px + 80px)){
+    section{
+        width: calc((100vw - 80px))
+    }
+}
+@media screen and (min-width: calc(720px + 80px)){
+    section{
+        width: 720px
+    }
+}
 section{
     margin:80px auto;
     background-color: #f3f5f7;
@@ -16,10 +26,12 @@ section>h3{
 }
 #blogroll>div{
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
-    margin: 20px auto
+    margin: 20px auto;
 }
 #blogroll a{
+    margin: 20px;
     font-size: 24px;
     text-decoration: none;
     color:black;

@@ -1,16 +1,4 @@
-const maxContentWidth = 720
-const minContentMargin = 80
 let notesJSON
-function updateWidth(){
-    const clientWidth = document.body.clientWidth
-    const articles = document.querySelectorAll("article")
-    articles.forEach(article => {
-        if(clientWidth < maxContentWidth + minContentMargin)
-            article.style.width = (clientWidth-minContentMargin) + "px"
-        else
-            article.style.width = maxContentWidth + "px"
-    })
-}
 function initNotes(){
     //加载所有评论
     ajaxReq({
@@ -20,7 +8,6 @@ function initNotes(){
             const notesDOM = document.querySelector('div#main')
             notesJSON = JSON.parse(req.response)
             notesJSON.forEach( (v,i) => notesDOM.appendChild(createNote(notesJSON.length - i - 1)))
-            updateWidth()
         }
     })
 }
@@ -47,4 +34,3 @@ function createNote(index){
 
     return note
 }
-window.addEventListener('resize', updateWidth)

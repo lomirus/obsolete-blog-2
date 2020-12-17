@@ -17,7 +17,6 @@
             crossorigin="anonymous"></script>
     <script>
         const maxBlogId = {{.maxId}}
-        window.onresize = updateLayout
     </script>
 </head>
 <body>
@@ -33,7 +32,7 @@
 </div>
 <div id="mask"></div>
 <div id="main">
-<div id="cover" style="background-image:url('/statics/images/blog/cover/{{.id}}.webp');">
+    <div id="cover" style="background-image:url('/statics/images/blog/cover/{{.id}}.webp');">
     <h1>{{.title}}</h1>
     <div id="time">
     <p><span>Created at </span><time>{{.creationTime}}</time></p>
@@ -46,9 +45,8 @@
         <div id="down"></div>
     </div>
 </div>
-<div id="content">{{.content}}</div>
-<div id="imgMask"><img></div>
-<div id="comment">
+    <div id="content">{{.content}}</div>
+    <div id="comment">
     <div id="newComment">
         <img src="https://pic1.zhimg.com/v2-73868f138ce31170fcf8a84ea73ba9d2_b.jpg" />
         <input type="text" placeholder="Anonymous">
@@ -57,6 +55,11 @@
     </div>
     <div id="comments"></div>
 </div>
+
+    <div id="imgMask"><img></div>
+
+    <div id="list"></div>
+    <button id="listButton">📃</button>
 </div>
 <script>
     getDirectory()
