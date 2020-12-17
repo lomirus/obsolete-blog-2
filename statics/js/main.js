@@ -32,14 +32,14 @@ function getQuery(key){
 }
 function putQuery(map){
     if(map === undefined || map === {}){
-        history.replaceState(null, null, location.pathname)
+        history.replaceState(null, null, location.pathname + location.hash)
     } else {
         let query = '?'
         for(let i in map){
             query += i + '=' + map[i] + '&'
         }
         query = query.slice(0, -1)
-        history.replaceState(null, null, location.pathname + query)
+        history.replaceState(null, null, location.pathname + query + location.hash)
     }
 }
 function showSidebar(){
