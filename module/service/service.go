@@ -156,7 +156,7 @@ func AltNote(db *sql.DB) gin.HandlerFunc {
 		var content = c.Query("content")
 		var noteAddr = c.Query("noteAddr")
 		var noteTime = c.Query("noteTime")
-		if noteAddr == "" || noteTime == "" || content == "" {
+		if noteAddr == "" && noteTime == "" && content == "" {
 			c.String(200, "one of \"noteAddr\", \"noteTime\" and \"content\" "+
 				"should not be empty at least")
 			return
