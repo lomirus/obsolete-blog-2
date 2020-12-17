@@ -22,8 +22,9 @@ header{
     right: 0;
     background-color: #f3f5f7;
     height:80px;
-    box-shadow:  rgba(0,0,0,0.2) 0 0 24px;
+    box-shadow: rgba(0,0,0,0.2) 0 0 24px;
     user-select: none;
+    transition: all ease 400ms 0ms;
 }
 #sidebar{
     position: fixed;

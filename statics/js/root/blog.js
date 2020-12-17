@@ -3,6 +3,7 @@ const maxImageWidth = 720
 const maxContentPadding = 40
 const minContentPadding = 20
 const blog_id = parseInt(location.pathname.slice(6))
+let beforePageYOffset // used to calc the scroll orientation
 let commentsJSON
 
 function updateLayout(){
@@ -126,6 +127,20 @@ function initCommentEditor(){
         newCommentAvatar.setAttribute('src', localStorage.getItem('avatar'))
     }
     newCommentAvatar.addEventListener('click', changeAvatar)
+}
+function initBlog(){
+    hljs.initHighlightingOnLoad();
+    initFormulas()
+    initImages()
+    initHeader()
+    initSidebar()
+    initComments()
+    initCommentEditor()
+    updateLayout()
+    window.addEventListener('scroll',() => {
+        window.pageYOffset > beforePageYOffset ? hideHeader(): showHeader()
+        beforePageYOffset = window.pageYOffset
+    })
 }
 
 function submitComment(){
@@ -297,4 +312,58 @@ function getNowTime(){
     second = second < 10 ? "0" + second : second
     now = `${year}-${month}-${date} ${hour}:${minute}:${second}`
     return now
+}
+function getDirectory(){
+    const elements = document.querySelector("#content").children
+    const titleNumber = [0,0,0,0,0,0,0]
+    const titles = []
+    for(let i in elements){
+        let name
+        if(elements[i].localName === "h2"){
+            titleNumber[2]++
+            name = titleNumber[2] + " " +
+                elements[i].innerText;
+            titleNumber[3] = 0
+            titleNumber[4] = 0
+            titleNumber[5] = 0
+            titleNumber[6] = 0
+        } else if(elements[i].localName === "h3"){
+            titleNumber[3]++
+            name = titleNumber[2] + "." +
+                titleNumber[3] + " " +
+                elements[i].innerText;
+            titleNumber[4] = 0
+            titleNumber[5] = 0
+            titleNumber[6] = 0
+        } else if(elements[i].localName === "h4"){
+            titleNumber[4]++
+            name =titleNumber[2] + "." +
+                titleNumber[3] + "." +
+                titleNumber[4] + " " +
+                elements[i].innerText;
+            titleNumber[5] = 0
+            titleNumber[6] = 0
+        } else if(elements[i].localName === "h5"){
+            titleNumber[5]++
+            name =titleNumber[2] + "." +
+                titleNumber[3] + "." +
+                titleNumber[4] + "." +
+                titleNumber[5] + " " +
+                elements[i].innerText;
+            titleNumber[6] = 0
+        } else if(elements[i].localName === "h6"){
+            titleNumber[6]++
+            name =titleNumber[2] + "." +
+                titleNumber[3] + "." +
+                titleNumber[4] + "." +
+                titleNumber[5] + "." +
+                titleNumber[6] + " " +
+                elements[i].innerText;
+        } else {
+            continue
+        }
+        titles.push(name)
+        elements[i].innerHTML = `<a name="${name}" href="#${name}">${elements[i].innerText}</a>`
+    }
+    titles.forEach(v => console.log(v))
 }
