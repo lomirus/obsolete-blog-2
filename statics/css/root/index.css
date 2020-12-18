@@ -1,7 +1,4 @@
-/*const articles = document.querySelectorAll('article')
-const images = document.querySelectorAll('img')*/
-
-@media screen and (max-width: calc(640px + 20px)){
+@media screen and (min-width: 0){
     #blogs{
         width:calc(100vw - 20px)
     }
@@ -12,20 +9,17 @@ const images = document.querySelectorAll('img')*/
         display: none;
     }
 }
-@media screen and (max-width: calc(960px + 20px)) and (min-width: calc(640px + 21px)){
-    #blogs{
-        width:calc(100vw - 20px)
-    }
+@media screen and (min-width: calc(640px + 20px)){
     article{
         grid-template-columns: 320px 1fr;
+    }
+    article img{
+        display: block;
     }
 }
-@media screen and (min-width: calc(960px + 21px)){
+@media screen and (min-width: calc(960px + 20px)){
     #blogs{
         width:960px
-    }
-    article{
-        grid-template-columns: 320px 1fr;
     }
 }
 ::-webkit-scrollbar{
@@ -34,7 +28,7 @@ const images = document.querySelectorAll('img')*/
 html {
     scrollbar-width: none;
 }
-div#blogs{
+#blogs{
     margin:30px auto;
     display:flex;
     flex-direction: column;

@@ -1,8 +1,7 @@
 let maxBlogId
+let images
 function updateImageUrl(){
-    const clientWidth = document.body.clientWidth
-    const images = document.querySelectorAll('img')
-    if (clientWidth > 640 + 20) {
+    if (window.getComputedStyle(images[0]).display !== 'none') {
         window.removeEventListener('resize', updateImageUrl)
         images.forEach((v,i) =>
             v.setAttribute('src', 'statics/images/blog/cover/' + (maxBlogId-i) + '.webp')
@@ -15,6 +14,8 @@ function initBlogCards(res){
         const article = createBlogCard(res, i)
         blogs.append(article)
     }
+    images = document.querySelectorAll('img')
+    window.addEventListener('resize', updateImageUrl)
     updateImageUrl()
 }
 function createBlogCard(res, i){
@@ -32,4 +33,3 @@ function createBlogCard(res, i){
     return article
 }
 
-window.addEventListener('resize', updateImageUrl)

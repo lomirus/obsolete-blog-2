@@ -4,17 +4,22 @@
     url('/statics/fonts/NotoSerifSC-Regular.woff') format('woff'),
     url('/statics/fonts/NotoSerifSC-Regular.eot') format('embedded-opentype');
 }
-@media screen and (min-width: calc(880px + 40px * 2)){
+/* Of All for Minimum Screen Size */
+@media screen and (min-width: 0){
     #content{
-        width: 880px;
-        padding: 40px;
+        width: calc(100vw - 20px * 2);
+        padding: 20px;
     }
     #comment{
-        width:880px;
-        padding:40px;
+        width:calc(100vw - 20px * 2);
+        padding: 20px;
+    }
+    #content img{
+        width: calc((100vw - 20px * 2));
     }
 }
-@media screen and (min-width: calc(880px + 20px * 2)) and (max-width: calc(880px + 40px * 2)){
+/* Of Content */
+@media screen and (min-width: calc(880px + 20px * 2)){
     #content{
         width: 880px;
         padding: calc((100vw - 880px)/2);
@@ -24,33 +29,28 @@
         padding:calc((100vw - 880px)/2);
     }
 }
-@media screen and (max-width: calc(880px + 20px * 2)){
+@media screen and (min-width: calc(880px + 40px * 2)){
     #content{
-        width: calc(100vw - 20px * 2);
-        padding: 20px;
+        padding: 40px;
     }
     #comment{
-        width:calc(100vw - 20px * 2);
-        padding: 20px;
+        padding:40px;
     }
 }
+/* Of Images */
 @media screen and (min-width: calc(720px + 20px * 2)){
     #content img{
         width: 720px;
     }
 }
-@media screen and (max-width: calc(720px + 20px * 2)){
-    #content img{
-        width: calc((100vw - 20px * 2));
-    }
-}
-body{
-    margin:0;
-    font-family: 'Noto Serif', serif;
-    font-size: 18px;
-}
 ::-webkit-scrollbar{
     display: none;
+}
+html {
+    scrollbar-width: none;
+}
+body{
+    font-size: 18px;
 }
 div#main{
     top:0
