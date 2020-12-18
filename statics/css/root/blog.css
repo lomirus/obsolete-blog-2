@@ -2,7 +2,7 @@
     --min-x-padding: 20px;
     --max-x-padding: 60px;
     --max-width: 880px;
-    --zero:0
+    --content-padding-bottom: 36px;
 }
 @font-face {
     font-family: 'Noto Serif';
@@ -15,7 +15,11 @@
     #content{
         margin: 0 auto 160px auto;
         width: calc(100vw - 20px * 2);
-        padding: 8px 20px 24px 20px;
+        padding:
+            8px
+            20px
+            var(--content-padding-bottom)
+            20px;
     }
     #comment{
         width: calc(100vw - 20px * 2);
@@ -29,8 +33,11 @@
 @media screen and (min-width: calc(880px + 20px * 2)){
     #content{
         width: var(--max-width);
-        padding: 8px calc((100vw - (var(--max-width) + var(--min-x-padding) * 2))/2 + var(--min-x-padding))
-            24px calc((100vw - (var(--max-width) + var(--min-x-padding) * 2))/2 + var(--min-x-padding));
+        padding:
+            8px
+            calc((100vw - (var(--max-width) + var(--min-x-padding) * 2))/2 + var(--min-x-padding))
+            var(--content-padding-bottom)
+            calc((100vw - (var(--max-width) + var(--min-x-padding) * 2))/2 + var(--min-x-padding));
     }
     #comment{
         width: var(--max-width);
@@ -39,8 +46,16 @@
 @media screen and (min-width: calc(880px + 60px * 2)){
     #content{
         width: var(--max-width);
-        margin: calc((100vw - (var(--max-width) + var(--max-x-padding) * 2))/2) auto 160px auto;
-        padding: 8px var(--max-x-padding) 24px var(--max-x-padding);
+        margin:
+            calc((100vw - (var(--max-width) + var(--max-x-padding) * 2))/2)
+            auto
+            160px
+            auto;
+        padding:
+            8px
+            var(--max-x-padding)
+            var(--content-padding-bottom)
+            var(--max-x-padding);
     }
     #comment{
         padding: 0 calc((100vw - var(--max-width))/2);
