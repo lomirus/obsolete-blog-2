@@ -1,3 +1,9 @@
+:root{
+    --min-x-padding: 20px;
+    --max-x-padding: 60px;
+    --max-width: 880px;
+    --zero:0
+}
 @font-face {
     font-family: 'Noto Serif';
     src: url('/statics/fonts/NotoSerifSC-Regular.woff2') format('woff2'),
@@ -7,12 +13,13 @@
 /* Of All for Minimum Screen Size */
 @media screen and (min-width: 0){
     #content{
+        margin: 0 auto 160px auto;
         width: calc(100vw - 20px * 2);
-        padding: 20px;
+        padding: 8px 20px 24px 20px;
     }
     #comment{
-        width:calc(100vw - 20px * 2);
-        padding: 20px;
+        width: calc(100vw - 20px * 2);
+        padding: 0 20px;
     }
     #content img{
         width: calc((100vw - 20px * 2));
@@ -21,20 +28,28 @@
 /* Of Content */
 @media screen and (min-width: calc(880px + 20px * 2)){
     #content{
-        width: 880px;
-        padding: calc((100vw - 880px)/2);
+        width: var(--max-width);
+        padding: 8px calc((100vw - (var(--max-width) + var(--min-x-padding) * 2))/2 + var(--min-x-padding))
+            24px calc((100vw - (var(--max-width) + var(--min-x-padding) * 2))/2 + var(--min-x-padding));
     }
     #comment{
-        width:880px;
-        padding:calc((100vw - 880px)/2);
+        width: var(--max-width);
     }
 }
-@media screen and (min-width: calc(880px + 40px * 2)){
+@media screen and (min-width: calc(880px + 60px * 2)){
     #content{
-        padding: 40px;
+        width: var(--max-width);
+        margin: calc((100vw - (var(--max-width) + var(--max-x-padding) * 2))/2) auto 160px auto;
+        padding: 8px var(--max-x-padding) 24px var(--max-x-padding);
     }
     #comment{
-        padding:40px;
+        padding: 0 calc((100vw - var(--max-width))/2);
+    }
+}
+@media screen and (min-width: calc(880px + 60px * 2 + 50px * 2)){
+    #content{
+        width: var(--max-width);
+        margin: 50px auto 160px auto;
     }
 }
 /* Of Images */
@@ -146,7 +161,6 @@ button#listButton{
 }
 /* Github Markdown Style Start*/
 div#content{
-    margin:40px auto 240px auto;
     background-color: #fff;
     line-height: 1.5;
 }
