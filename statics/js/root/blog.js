@@ -109,6 +109,10 @@ function initBlog(){
     initCommentEditor()
     updateHeader()
     window.onscroll = updateHeader
+    const listButton = document.querySelector('#listButton')
+    listButton.addEventListener('click', function(){
+        getDirectory()
+    })
 }
 
 function submitComment(){
@@ -334,4 +338,5 @@ function getDirectory(){
         elements[i].innerHTML = `<a name="${name}" href="#${name}">${elements[i].innerText}</a>`
     }
     titles.forEach(v => console.log(v))
+    console.log('\n')
 }

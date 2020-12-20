@@ -33,36 +33,35 @@
 <div id="mask"></div>
 <div id="main">
     <div id="cover" style="background-image:url('/statics/images/blog/cover/{{.id}}.webp');">
-    <h1>{{.title}}</h1>
-    <div id="time">
-    <p><span>Created at </span><time>{{.creationTime}}</time></p>
-    <p><span>Last Modified at </span><time>{{.modifiedTime}}</time></p>
-    </div>
-    <div id="coverMask">
-        <div id="left"></div>
-        <div id="up"><a href="/"></a></div>
-        <div id="right"></div>
-        <div id="down"></div>
-    </div>
-</div>
+            <h1>{{.title}}</h1>
+            <div id="time">
+                <p><span>Created at </span><time>{{.creationTime}}</time></p>
+                <p><span>Last Modified at </span><time>{{.modifiedTime}}</time></p>
+            </div>
+            <div id="coverMask">
+                <div id="left"></div>
+                <div id="up"><a href="/"></a></div>
+                <div id="right"></div>
+                <div id="down"></div>
+            </div>
+        </div>
     <div id="content">{{.content}}</div>
     <div id="comment">
-    <div id="newComment">
-        <img src="https://pic1.zhimg.com/v2-73868f138ce31170fcf8a84ea73ba9d2_b.jpg" />
-        <input type="text" placeholder="Anonymous">
-        <button>Submit</button>
-        <textarea placeholder="Input your comment here..."></textarea>
+        <div id="newComment">
+            <img src="https://pic1.zhimg.com/v2-73868f138ce31170fcf8a84ea73ba9d2_b.jpg" />
+            <input type="text" placeholder="Anonymous">
+            <button>Submit</button>
+            <textarea placeholder="Input your comment here..."></textarea>
+        </div>
+        <div id="comments"></div>
     </div>
-    <div id="comments"></div>
-</div>
-
     <div id="imgMask"><img></div>
-
     <div id="list"></div>
-    <button id="listButton">📃</button>
+    <div id="buttons">
+        <button id="listButton">📃</button>
+    </div>
 </div>
 <script>
-    getDirectory()
     initBlog()
 </script>
 
