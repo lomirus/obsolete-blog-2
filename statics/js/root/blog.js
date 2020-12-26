@@ -1,6 +1,16 @@
 const blog_id = parseInt(location.pathname.slice(6))
 let commentsJSON
 
+function initBlog(){
+    hljs.initHighlightingOnLoad();
+    initDirectory()
+    initFormulas()
+    initImages()
+    initComments()
+    initCommentEditor()
+    updateBackground()
+    window.addEventListener('scroll', updateBackground)
+}
 function initFormulas(){
     const formulas = document.querySelectorAll(".language-math")
     formulas.forEach(function(v){
@@ -29,37 +39,6 @@ function initImages(){
     imgMask.addEventListener('click',function(){
         imgMask.style.display = 'none'
     })
-}
-function initCover(){
-    const down = document.querySelector("div#down")
-    const left = document.querySelector("div#left")
-    const right = document.querySelector("div#right")
-    down.addEventListener('click',function (){
-        window.scrollTo({
-            left: 0,
-            top: document.documentElement.clientHeight,
-            behavior: 'smooth'
-        })
-    })
-    if(blog_id != 1){
-        left.addEventListener('click',function (){
-            window.location.href = "/blog/" + (blog_id - 1)
-        })
-    } else {
-        let style = document.createElement('style');
-        style.innerHTML = 'div#left:hover{background:none!important}'
-        document.body.appendChild(style);
-    }
-
-    if(blog_id != maxBlogId){
-        right.addEventListener('click',function (){
-            window.location.href = "/blog/" + (blog_id +1)
-        })
-    } else {
-        let style = document.createElement('style');
-        style.innerHTML = 'div#right:hover{background:none!important}'
-        document.body.appendChild(style);
-    }
 }
 function initComments(){
     //加载所有评论
@@ -92,17 +71,6 @@ function initCommentEditor(){
         newCommentAvatar.setAttribute('src', localStorage.getItem('avatar'))
     }
     newCommentAvatar.addEventListener('click', changeAvatar)
-}
-function initBlog(){
-    hljs.initHighlightingOnLoad();
-    initDirectory()
-    initFormulas()
-    initImages()
-    initCover()
-    initComments()
-    initCommentEditor()
-    const listButton = document.querySelector('#listButton')
-    listButton.onclick = showDirectory
 }
 
 function submitComment(){
@@ -154,7 +122,6 @@ function changeAvatar(){
     if (newAvatarUrl == null) return
     this.setAttribute('src', newAvatarUrl)
 }
-
 function createComment(index){
     let comment = document.createElement('div')
     let avatar = document.createElement('img')
@@ -258,7 +225,6 @@ function createComment(index){
 
     return comment
 }
-
 function getNowTime(){
     let now = new Date()
     let year = now.getFullYear()
@@ -332,4 +298,20 @@ function initDirectory(){
 }
 function showDirectory(){
 
+}
+function updateBackground(){
+    const height = document.documentElement.clientHeight
+    const top = document.documentElement.scrollTop
+    const mask = document.querySelector('#background>.mask')
+    const cover = document.querySelector('#cover')
+    if(top < height){
+        mask.style.opacity = (top / height * 0.2).toString()
+    } else {
+        mask.style.opacity = "0.2"
+    }
+    if (top < 2 * height){
+        cover.style.opacity = (2-top/height).toString()
+    } else {
+        cover.style.opacity = "0"
+    }
 }

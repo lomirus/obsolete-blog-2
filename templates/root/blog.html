@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.title}}</title>
-    <link rel="stylesheet" href="/statics/css/root/blog.css">
     <link rel="stylesheet" href="/statics/css/main.css">
+    <link rel="stylesheet" href="/statics/css/root/blog.css">
     <link rel="stylesheet" href="/statics/css/highlight/night-owl.css">
     <script src="/statics/js/highlight.min.js"></script>
     <script src="/statics/js/root/blog.js"></script>
@@ -21,27 +21,26 @@
 </head>
 <body>
 <header>
-    <div id="list">选项</div>
-    <nav>
+    <div id="listControl" tabindex="0">选项</div>
+    <div id="list" class="hidden" style="display: none">
         <div onclick="window.open('/', '_self')">札记</div>
         <div onclick="window.open('/notes', '_self')">碎语</div>
         <div onclick="window.open('/about', '_self')">关于</div>
-    </nav>
+        <div onclick="showDirectory()" style="font-size: 26px;background-color: #0077e6">📃</div>
+    </div>
 </header>
 <div id="main">
-    <div id="cover" style="background-image:url('/statics/images/blog/cover/{{.id}}.webp');">
-            <h1>{{.title}}</h1>
-            <div id="time">
-                <p><span>Created at </span><time>{{.creationTime}}</time></p>
-                <p><span>Last Modified at </span><time>{{.modifiedTime}}</time></p>
-            </div>
-            <div id="coverMask">
-                <div id="left"></div>
-                <div id="up"><a href="/"></a></div>
-                <div id="right"></div>
-                <div id="down"></div>
-            </div>
+    <div id="background">
+        <div class="mask"></div>
+        <div class="image" style="background-image:url('/statics/images/blog/cover/{{.id}}.webp');"></div>
+    </div>
+    <div id="cover">
+        <h1>{{.title}}</h1>
+        <div id="time">
+            <p><span>Created at </span><time>{{.creationTime}}</time></p>
+            <p><span>Last Modified at </span><time>{{.modifiedTime}}</time></p>
         </div>
+    </div>
     <div id="content">{{.content}}</div>
     <div id="comment">
         <div id="newComment">
@@ -53,14 +52,11 @@
         <div id="comments"></div>
     </div>
     <div id="imgMask"><img></div>
-    <div id="subList"></div>
-    <div id="buttons">
-        <button id="listButton">📃</button>
-    </div>
+    <div id="directory"></div>
 </div>
 <script>
     initBlog()
-    document.querySelector('#list').onclick = updateButtons
+    initPanel()
 </script>
 
 </body>

@@ -1,5 +1,3 @@
-let list, header, mask
-
 function getQuery(key){
     let query = {}
     let map = location.search.slice(1).split('&')
@@ -25,14 +23,33 @@ function putQuery(map){
         history.replaceState(null, null, location.pathname + query + location.hash)
     }
 }
-function updateButtons(){
-    const root = document.documentElement
-    if(getComputedStyle(root).getPropertyValue('--button-transform') === 'scale(1) rotate(0deg)'){
-        root.style.setProperty('--button-transform', 'scale(0) rotate(180deg)')
-        root.style.setProperty('--button-opacity', '0')
-    } else {
-        root.style.setProperty('--button-transform', 'scale(1) rotate(0deg)')
-        root.style.setProperty('--button-opacity', '1')
+function initPanel(){
+    const listControl = document.querySelector("#listControl")
+    const list = document.querySelector("#list")
+    let timer
+    listControl.onclick = function(){
+        if (list.getAttribute('class') === 'visible') {
+            listControl.innerText = '选项'
+            list.setAttribute('class', 'hidden')
+            timer = setTimeout(function (){
+                list.style.display = 'none'
+            }, 500)
+        } else {
+            listControl.innerText = '×'
+            list.style.display = 'block'
+            clearTimeout(timer)
+            setTimeout(function(){
+                list.setAttribute('class', 'visible')
+            }, 0)
+
+        }
+    }
+    listControl.onblur = function (){
+        listControl.innerText = '选项'
+        list.setAttribute('class', 'hidden')
+        timer = setTimeout(function (){
+            list.style.display = 'none'
+        }, 500)
     }
 }
 function ajaxReq({method, url, query, handleFunc}){

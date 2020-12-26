@@ -10,12 +10,12 @@
 </head>
 <body>
 <header>
-    <div id="list">选项</div>
-    <nav>
+    <div id="listControl" tabindex="0">选项</div>
+    <div id="list" class="hidden">
         <div onclick="window.open('/', '_self')">札记</div>
-        <div onclick="window.open('/notes', '_self')">碎语</div>
+        <div>碎语</div>
         <div onclick="window.open('/about', '_self')">关于</div>
-    </nav>
+    </div>
 </header>
 <div id="main">
     <!--<article>
@@ -28,7 +28,7 @@
 </div>
 <script>
     initNotes()
-    document.querySelector('#list').onclick = updateButtons
+    initPanel()
 </script>
 </body>
 </html>
