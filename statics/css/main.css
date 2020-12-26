@@ -4,77 +4,56 @@
     url('/statics/fonts/NotoSerifSC-Regular.woff') format('woff'),
     url('/statics/fonts/NotoSerifSC-Regular.eot') format('embedded-opentype');
 }
-body{
-    margin:0;
-    font-family: 'Noto Serif', serif;
-    background-color: #e3e5e7;
+:root{
+    --button-transform: scale(0) rotate(180deg);
+    --button-opacity: 0;
 }
 ::selection{
     color:#fff;
     background-color: #ff4081;
 }
-
+body{
+    margin:0;
+    font-family: 'Noto Serif', serif;
+    background-color: #e3e5e7;
+}
 header{
-    position: fixed;
-    z-index: 4;
-    top:0;
-    left: 0;
-    right: 0;
-    background-color: #f3f5f7;
-    height:80px;
-    box-shadow: rgba(0,0,0,0.2) 0 0 24px;
-    user-select: none;
-    transition: all ease 400ms 0ms;
-}
-#sidebar{
-    position: fixed;
-    top: 80px;
-    bottom: 0;
-    z-index: 3;
-    background-color: #eaecee;
-    width: 280px;
-    user-select: none;
-    transition: all 300ms 0ms ease;
-}
-#sidebar>nav{
+    top: 30px;
+    left: 30px;
+    z-index: 2;
     display: flex;
+    position: fixed;
     flex-direction: column;
-    justify-content: center;
-    margin:12px 0;
 }
-#sidebar>nav>a{
-    margin: 0;
-    padding:24px;
-    text-decoration: none;
-    color: black;
+header div#list{
+    background-color: #1e1e1e;
+    color: #fff;
+}
+header div:not(#list){
+    transition: transform ease 500ms, opacity ease 300ms;
+    transform: var(--button-transform);
+    opacity: var(--button-opacity);
+    background-color: #ce9178;
+    color: #fff;
+}
+
+header div{
+    width: 75px;
+    height: 75px;
+    margin: 15px;
     font-size: 20px;
+    user-select: none;
+    line-height: 75px;
     text-align: center;
-    transition: all 300ms 0ms ease;
+    border-radius: 50%;
+    background-color: #f3f5f7;
     cursor: pointer;
-}
-#sidebar>nav>a:hover{
-    background-color: #d3d5d7;
-}
-header>#showSidebar{
-    width: 200px;
-    text-align: center;
-    font-size: 24px;
-    line-height: 80px;
-    cursor: pointer;
+    box-shadow: rgba(0,0,0,0.2) 0 0 8px;
 }
 #main{
     position: absolute;
-    top:80px;
+    top: 80px;
     left: 0;
     right:0;
     z-index: 1;
-}
-#mask{
-    position: fixed;
-    background-color: rgba(0,0,0,0.1);
-    top:80px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
 }

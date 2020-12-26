@@ -1,22 +1,5 @@
-let sidebarButton, header, sidebar, mask
+let list, header, mask
 
-function initSidebar(){
-    sidebarButton = document.querySelector("#showSidebar")
-    header = document.querySelector("header")
-    sidebar = document.querySelector("#sidebar")
-    mask = document.querySelector("#mask")
-    switch(getQuery('showSidebar')){
-        case 'true': showSidebar();break;
-        default: hideSidebar();break;
-    }
-    sidebarButton.addEventListener('click', function(){
-        switch(getQuery('showSidebar')){
-            case 'true': hideSidebar();break;
-            default: showSidebar();break;
-        }
-    })
-    mask.addEventListener('click', hideSidebar)
-}
 function getQuery(key){
     let query = {}
     let map = location.search.slice(1).split('&')
@@ -42,25 +25,15 @@ function putQuery(map){
         history.replaceState(null, null, location.pathname + query + location.hash)
     }
 }
-function showSidebar(){
-    sidebar.style.left = '0px'
-    sidebar.style.boxShadow = 'rgba(0,0,0,0.2) 20px 0 20px'
-    mask.style.display = 'block'
-    putQuery({"showSidebar":"true"})
-}
-function hideSidebar(){
-    sidebar.style.left = '-300px'
-    sidebar.style.boxShadow = 'none'
-    mask.style.display = 'none'
-    putQuery()
-}
-function hideHeader(){
-    header.style.top = '-80px'
-    header.style.boxShadow = 'none'
-}
-function showHeader(){
-    header.style.top = '0px'
-    header.style.boxShadow = 'rgba(0,0,0,0.2) 0 0 24px'
+function updateButtons(){
+    const root = document.documentElement
+    if(getComputedStyle(root).getPropertyValue('--button-transform') === 'scale(1) rotate(0deg)'){
+        root.style.setProperty('--button-transform', 'scale(0) rotate(180deg)')
+        root.style.setProperty('--button-opacity', '0')
+    } else {
+        root.style.setProperty('--button-transform', 'scale(1) rotate(0deg)')
+        root.style.setProperty('--button-opacity', '1')
+    }
 }
 function ajaxReq({method, url, query, handleFunc}){
     if(query){

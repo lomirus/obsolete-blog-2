@@ -70,9 +70,6 @@ body{
 div#main{
     top:0
 }
-header{
-    background-color: rgba(243,245,247,0.4) !important;
-}
 #cover{
     color:white;
     position: relative;

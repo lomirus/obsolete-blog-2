@@ -1,11 +1,5 @@
 const blog_id = parseInt(location.pathname.slice(6))
-let beforePageYOffset // used to calc the scroll orientation
 let commentsJSON
-
-function updateHeader(){
-    window.pageYOffset > beforePageYOffset ? hideHeader() : showHeader()
-    beforePageYOffset = window.pageYOffset
-}
 
 function initFormulas(){
     const formulas = document.querySelectorAll(".language-math")
@@ -101,18 +95,14 @@ function initCommentEditor(){
 }
 function initBlog(){
     hljs.initHighlightingOnLoad();
+    initDirectory()
     initFormulas()
     initImages()
     initCover()
-    initSidebar()
     initComments()
     initCommentEditor()
-    updateHeader()
-    window.onscroll = updateHeader
     const listButton = document.querySelector('#listButton')
-    listButton.addEventListener('click', function(){
-        getDirectory()
-    })
+    listButton.onclick = showDirectory
 }
 
 function submitComment(){
@@ -285,7 +275,7 @@ function getNowTime(){
     now = `${year}-${month}-${date} ${hour}:${minute}:${second}`
     return now
 }
-function getDirectory(){
+function initDirectory(){
     const elements = document.querySelector("#content").children
     const titleNumber = [0,0,0,0,0,0,0]
     const titles = []
@@ -339,4 +329,7 @@ function getDirectory(){
     }
     titles.forEach(v => console.log(v))
     console.log('\n')
+}
+function showDirectory(){
+
 }

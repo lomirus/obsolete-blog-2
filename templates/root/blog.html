@@ -21,16 +21,13 @@
 </head>
 <body>
 <header>
-    <div id="showSidebar">Sidebar</div>
-</header>
-<div id="sidebar">
+    <div id="list">选项</div>
     <nav>
-        <a href="/?showSidebar=true">札记</a>
-        <a href="/notes?showSidebar=true">碎语</a>
-        <a href="/about?showSidebar=true">关于</a>
+        <div onclick="window.open('/', '_self')">札记</div>
+        <div onclick="window.open('/notes', '_self')">碎语</div>
+        <div onclick="window.open('/about', '_self')">关于</div>
     </nav>
-</div>
-<div id="mask"></div>
+</header>
 <div id="main">
     <div id="cover" style="background-image:url('/statics/images/blog/cover/{{.id}}.webp');">
             <h1>{{.title}}</h1>
@@ -56,13 +53,14 @@
         <div id="comments"></div>
     </div>
     <div id="imgMask"><img></div>
-    <div id="list"></div>
+    <div id="subList"></div>
     <div id="buttons">
         <button id="listButton">📃</button>
     </div>
 </div>
 <script>
     initBlog()
+    document.querySelector('#list').onclick = updateButtons
 </script>
 
 </body>
