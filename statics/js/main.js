@@ -1,3 +1,5 @@
+let listControl, list
+
 function getQuery(key){
     let query = {}
     let map = location.search.slice(1).split('&')
@@ -24,12 +26,12 @@ function putQuery(map){
     }
 }
 function initPanel(){
-    const listControl = document.querySelector("#listControl")
-    const list = document.querySelector("#list")
+    listControl = document.querySelector("#listControl")
+    list = document.querySelector("#list")
     let timer
     listControl.onclick = function(){
         if (list.getAttribute('class') === 'visible') {
-            listControl.innerText = '选项'
+            listControl.innerText = '≡'
             list.setAttribute('class', 'hidden')
             timer = setTimeout(function (){
                 list.style.display = 'none'
@@ -45,7 +47,7 @@ function initPanel(){
         }
     }
     listControl.onblur = function (){
-        listControl.innerText = '选项'
+        listControl.innerText = '≡'
         list.setAttribute('class', 'hidden')
         timer = setTimeout(function (){
             list.style.display = 'none'

@@ -1,5 +1,6 @@
 const blog_id = parseInt(location.pathname.slice(6))
-let commentsJSON
+let images, upper ,viewer, directory
+let commentsData, directoryData = []
 
 function initBlog(){
     hljs.initHighlightingOnLoad();
@@ -9,6 +10,11 @@ function initBlog(){
     initComments()
     initCommentEditor()
     updateBackground()
+    upper = document.querySelector("#upper")
+    upper.onclick = function(){
+        upper.style.display = 'none'
+        viewer.style.display = 'none'
+    }
     window.addEventListener('scroll', updateBackground)
 }
 function initFormulas(){
@@ -26,19 +32,16 @@ function initFormulas(){
     })
 }
 function initImages(){
-    const images = document.querySelectorAll("div#content img")
-    const imgMask = document.querySelector("div#imgMask")
-    const maskImg = document.querySelector("div#imgMask img")
+    images = document.querySelectorAll("div#content img")
+    viewer = document.querySelector("#viewer")
     for(let i = 0;i < images.length;i++){
         images[i].setAttribute('onselectstart',"return false")
-        images[i].addEventListener('click',function(){
-            imgMask.style.display = 'block'
-            maskImg.setAttribute('src',images[i].getAttribute('src'))
-        })
+        images[i].onclick = function(){
+            upper.style.display = 'flex'
+            viewer.style.display = 'block'
+            viewer.setAttribute('src',images[i].getAttribute('src'))
+        }
     }
-    imgMask.addEventListener('click',function(){
-        imgMask.style.display = 'none'
-    })
 }
 function initComments(){
     //加载所有评论
@@ -50,11 +53,11 @@ function initComments(){
         },
         handleFunc:function(req){
             const commentsDOM = document.querySelector('div#comments')
-            commentsJSON = JSON.parse(req.response)
-            if(commentsJSON.length === 0){
+            commentsData = JSON.parse(req.response)
+            if(commentsData.length === 0){
                 commentsDOM.style.display = "none"
             } else {
-                commentsJSON.forEach( (v,i) => commentsDOM.appendChild(createComment(i)))
+                commentsData.forEach( (v,i) => commentsDOM.appendChild(createComment(i)))
             }
         }
     })
@@ -72,176 +75,19 @@ function initCommentEditor(){
     }
     newCommentAvatar.addEventListener('click', changeAvatar)
 }
-
-function submitComment(){
-    const newCommentName = document.querySelector('div#newComment>input')
-    const newCommentAvatar = document.querySelector('div#newComment>img')
-    const newCommentText = document.querySelector('div#newComment>textarea')
-    const text = newCommentText.value
-    const username = newCommentName.value === ''? "Anonymous" : newCommentName.value
-    const avatar = newCommentAvatar.src
-    if(text === ''){
-        alert('内容不可为空')
-    } else {
-        localStorage.setItem('avatar', avatar)
-        localStorage.setItem('username', username)
-        ajaxReq({
-            method: 'POST',
-            url: '/ajax/comment/new',
-            query:{
-                'content': text,
-                'username': username,
-                'blog_id': blog_id,
-                'avatar_url': escape(avatar)
-            },
-            handleFunc: function(res){
-                let commentJSON = {
-                    "id": res.response,
-                    "content": text,
-                    "time": getNowTime(),
-                    "username": username,
-                    "avatar_url": avatar,
-                    "likes": 0,
-                }
-                const commentsDOM = document.querySelector('div#comments')
-                commentsJSON.push(commentJSON)
-                commentsDOM.appendChild(createComment(commentsJSON.length - 1))
-                commentsDOM.style.display = "block"
-                Notification.requestPermission().then(function(permission){
-                    if (permission === 'granted')
-                        new Notification("You've sent your comment", {body: text}); // 显示通知
-                    else if (permission === 'denied')
-                        alert("You've sent your comment."); // 显示通知
-                })
-            }})
-    }
-
-}
-function changeAvatar(){
-    const newAvatarUrl = prompt("Please input the url of new avatar:")
-    if (newAvatarUrl == null) return
-    this.setAttribute('src', newAvatarUrl)
-}
-function createComment(index){
-    let comment = document.createElement('div')
-    let avatar = document.createElement('img')
-    let main = document.createElement('div')
-    let username = document.createElement('span')
-    let info = document.createElement('div')
-    let content = document.createElement('p')
-    let operation = document.createElement('div')
-    let likes = document.createElement('span')
-    let pro = document.createElement('span')
-    let con = document.createElement('span')
-    let time = document.createElement('span')
-
-    comment.setAttribute('class', 'comment')
-    comment.setAttribute('comment_id', commentsJSON[index].id)
-    avatar.setAttribute('class', 'avatar')
-    main.setAttribute('class', 'main')
-    username.setAttribute('class', 'username')
-    content.setAttribute('class', 'content')
-    info.setAttribute('class', 'info')
-    operation.setAttribute('class', 'operation')
-    likes.setAttribute('class', 'likes')
-    pro.setAttribute('class', 'pro')
-    con.setAttribute('class', 'con')
-    time.setAttribute('class', 'time')
-    avatar.setAttribute('src', commentsJSON[index].avatar_url)
-    likes.setAttribute('likes', commentsJSON[index].likes)
-
-    username.innerText = commentsJSON[index].username
-    content.innerText = commentsJSON[index].content
-    if(commentsJSON[index].likes >= 0){
-        likes.innerText = '❤️'
-    } else {
-        likes.innerText = '💔️'
-    }
-
-    pro.innerText = '👍'
-    con.innerText = '👎'
-    time.innerText = commentsJSON[index].time
-
-    pro.addEventListener('click', function (event){
-        const likes = this.parentElement.children[2]
-        ajaxReq({
-            method: 'POST',
-            url: '/ajax/comment/pro',
-            query:{
-                id: commentsJSON[index].id
-            },
-            handleFunc: function(){
-                const oldLikes = parseInt(likes.getAttribute('likes'))
-                likes.setAttribute('likes', oldLikes + 1)
-                likes.innerText =
-                    parseInt(likes.getAttribute('likes')) >= 0 ? '💖' : '💗'
-                likes.style.transitionDuration = "120ms"
-                likes.style.transform = "scale(1.2)"
-                setTimeout(() => {
-                    likes.style.transform = ""
-                    setTimeout(() => {
-                        likes.style.transitionDuration = "240ms"
-                        likes.innerText =
-                            parseInt(likes.getAttribute('likes')) >= 0 ? '❤️' : '💔️'
-                    }, 120)
-                }, 120)
-            }
-        })
-    })
-    con.addEventListener('click', function (){
-        const likes = this.parentElement.children[2]
-        ajaxReq({
-            method:'POST',
-            url: '/ajax/comment/con',
-            query:{
-                id: commentsJSON[index].id
-            },
-            handleFunc: function(){
-                const oldLikes = parseInt(likes.getAttribute('likes'))
-                likes.setAttribute('likes',oldLikes - 1)
-                likes.innerText =
-                    parseInt(likes.getAttribute('likes')) >= 0 ? '💓' : '🖤'
-                likes.style.transform = "scale(1.2)"
-                setTimeout(() => {
-                    likes.style.transform = ""
-                    likes.innerText =
-                        parseInt(likes.getAttribute('likes')) >= 0 ? '❤️' : '💔️'
-                }, 240)
-            }
-        })
-    })
-
-    operation.appendChild(pro)
-    operation.appendChild(con)
-    operation.appendChild(likes)
-    info.appendChild(username)
-    info.appendChild(time)
-    main.appendChild(info)
-    main.appendChild(content)
-    main.appendChild(operation)
-
-    comment.appendChild(avatar)
-    comment.appendChild(main)
-
-    return comment
-}
-function getNowTime(){
-    let now = new Date()
-    let year = now.getFullYear()
-    let month = now.getMonth()
-    let date = now.getDate()
-    let hour = now.getHours()
-    let minute = now.getMinutes()
-    let second = now.getSeconds()
-    month = month < 10 ? "0" + month : month
-    date = date < 10 ? "0" + date : date
-    hour = hour < 10 ? "0" + hour : hour
-    minute = minute < 10 ? "0" + minute : minute
-    second = second < 10 ? "0" + second : second
-    now = `${year}-${month}-${date} ${hour}:${minute}:${second}`
-    return now
-}
 function initDirectory(){
+    const elements = document.querySelector("#content").children
+    directory = document.querySelector("#directory")
+    for(let i in elements){
+        if(["h2", "h3", "h4", "h5", "h6"].indexOf(elements[i].localName) !== -1) {
+            const label = parseInt(elements[i].localName[1])
+            const name = elements[i].innerText
+            directoryData.push([label, name])
+            elements[i].innerHTML = `<a name="${name}" href="#${name}">${name}</a>`
+        }
+    }
+}
+/*function initDirectory(){
     const elements = document.querySelector("#content").children
     const titleNumber = [0,0,0,0,0,0,0]
     const titles = []
@@ -295,23 +141,203 @@ function initDirectory(){
     }
     titles.forEach(v => console.log(v))
     console.log('\n')
+}*/
+
+function submitComment(){
+    const newCommentName = document.querySelector('div#newComment>input')
+    const newCommentAvatar = document.querySelector('div#newComment>img')
+    const newCommentText = document.querySelector('div#newComment>textarea')
+    const text = newCommentText.value
+    const username = newCommentName.value === ''? "Anonymous" : newCommentName.value
+    const avatar = newCommentAvatar.src
+    if(text === ''){
+        alert('内容不可为空')
+    } else {
+        localStorage.setItem('avatar', avatar)
+        localStorage.setItem('username', username)
+        ajaxReq({
+            method: 'POST',
+            url: '/ajax/comment/new',
+            query:{
+                'content': text,
+                'username': username,
+                'blog_id': blog_id,
+                'avatar_url': escape(avatar)
+            },
+            handleFunc: function(res){
+                let commentJSON = {
+                    "id": res.response,
+                    "content": text,
+                    "time": getNowTime(),
+                    "username": username,
+                    "avatar_url": avatar,
+                    "likes": 0,
+                }
+                const commentsDOM = document.querySelector('div#comments')
+                commentsData.push(commentJSON)
+                commentsDOM.appendChild(createComment(commentsData.length - 1))
+                commentsDOM.style.display = "block"
+                Notification.requestPermission().then(function(permission){
+                    if (permission === 'granted')
+                        new Notification("You've sent your comment", {body: text}); // 显示通知
+                    else if (permission === 'denied')
+                        alert("You've sent your comment."); // 显示通知
+                })
+            }})
+    }
+
+}
+function changeAvatar(){
+    const newAvatarUrl = prompt("Please input the url of new avatar:")
+    if (newAvatarUrl == null) return
+    this.setAttribute('src', newAvatarUrl)
+}
+function createComment(index){
+    let comment = document.createElement('div')
+    let avatar = document.createElement('img')
+    let main = document.createElement('div')
+    let username = document.createElement('span')
+    let info = document.createElement('div')
+    let content = document.createElement('p')
+    let operation = document.createElement('div')
+    let likes = document.createElement('span')
+    let pro = document.createElement('span')
+    let con = document.createElement('span')
+    let time = document.createElement('span')
+
+    comment.setAttribute('class', 'comment')
+    comment.setAttribute('comment_id', commentsData[index].id)
+    avatar.setAttribute('class', 'avatar')
+    main.setAttribute('class', 'main')
+    username.setAttribute('class', 'username')
+    content.setAttribute('class', 'content')
+    info.setAttribute('class', 'info')
+    operation.setAttribute('class', 'operation')
+    likes.setAttribute('class', 'likes')
+    pro.setAttribute('class', 'pro')
+    con.setAttribute('class', 'con')
+    time.setAttribute('class', 'time')
+    avatar.setAttribute('src', commentsData[index].avatar_url)
+    likes.setAttribute('likes', commentsData[index].likes)
+
+    username.innerText = commentsData[index].username
+    content.innerText = commentsData[index].content
+    if(commentsData[index].likes >= 0){
+        likes.innerText = '❤️'
+    } else {
+        likes.innerText = '💔️'
+    }
+
+    pro.innerText = '👍'
+    con.innerText = '👎'
+    time.innerText = commentsData[index].time
+
+    pro.addEventListener('click', function (event){
+        const likes = this.parentElement.children[2]
+        ajaxReq({
+            method: 'POST',
+            url: '/ajax/comment/pro',
+            query:{
+                id: commentsData[index].id
+            },
+            handleFunc: function(){
+                const oldLikes = parseInt(likes.getAttribute('likes'))
+                likes.setAttribute('likes', oldLikes + 1)
+                likes.innerText =
+                    parseInt(likes.getAttribute('likes')) >= 0 ? '💖' : '💗'
+                likes.style.transitionDuration = "120ms"
+                likes.style.transform = "scale(1.2)"
+                setTimeout(() => {
+                    likes.style.transform = ""
+                    setTimeout(() => {
+                        likes.style.transitionDuration = "240ms"
+                        likes.innerText =
+                            parseInt(likes.getAttribute('likes')) >= 0 ? '❤️' : '💔️'
+                    }, 120)
+                }, 120)
+            }
+        })
+    })
+    con.addEventListener('click', function (){
+        const likes = this.parentElement.children[2]
+        ajaxReq({
+            method:'POST',
+            url: '/ajax/comment/con',
+            query:{
+                id: commentsData[index].id
+            },
+            handleFunc: function(){
+                const oldLikes = parseInt(likes.getAttribute('likes'))
+                likes.setAttribute('likes',oldLikes - 1)
+                likes.innerText =
+                    parseInt(likes.getAttribute('likes')) >= 0 ? '💓' : '🖤'
+                likes.style.transform = "scale(1.2)"
+                setTimeout(() => {
+                    likes.style.transform = ""
+                    likes.innerText =
+                        parseInt(likes.getAttribute('likes')) >= 0 ? '❤️' : '💔️'
+                }, 240)
+            }
+        })
+    })
+
+    operation.appendChild(pro)
+    operation.appendChild(con)
+    operation.appendChild(likes)
+    info.appendChild(username)
+    info.appendChild(time)
+    main.appendChild(info)
+    main.appendChild(content)
+    main.appendChild(operation)
+
+    comment.appendChild(avatar)
+    comment.appendChild(main)
+
+    return comment
+}
+function getNowTime(){
+    let now = new Date()
+    let year = now.getFullYear()
+    let month = now.getMonth()
+    let date = now.getDate()
+    let hour = now.getHours()
+    let minute = now.getMinutes()
+    let second = now.getSeconds()
+    month = month < 10 ? "0" + month : month
+    date = date < 10 ? "0" + date : date
+    hour = hour < 10 ? "0" + hour : hour
+    minute = minute < 10 ? "0" + minute : minute
+    second = second < 10 ? "0" + second : second
+    now = `${year}-${month}-${date} ${hour}:${minute}:${second}`
+    return now
 }
 function showDirectory(){
-
+    upper.style.display = 'flex'
+    directory.style.display = 'block'
+    directoryData.forEach(function(v){
+        console.log(strMultiply('  ', v[0]-2) + v[1])
+    })
 }
 function updateBackground(){
     const height = document.documentElement.clientHeight
     const top = document.documentElement.scrollTop
     const mask = document.querySelector('#background>.mask')
     const cover = document.querySelector('#cover')
-    if(top < height){
-        mask.style.opacity = (top / height * 0.2).toString()
+    if(top < height * 0.5){
+        mask.style.opacity = (top / height * 0.4).toString()
+        cover.style.opacity = "1"
+    } else if(top < height) {
+        mask.style.opacity = "0.2"
+        cover.style.opacity = (2 - top / height * 2).toString()
     } else {
         mask.style.opacity = "0.2"
-    }
-    if (top < 2 * height){
-        cover.style.opacity = (2-top/height).toString()
-    } else {
         cover.style.opacity = "0"
     }
+}
+function strMultiply(str='', time=1){
+    let newStr = ''
+    for(let i = 0; i < time; i++){
+        newStr += str
+    }
+    return newStr
 }

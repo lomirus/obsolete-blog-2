@@ -22,6 +22,15 @@
         width:960px
     }
 }
+@media (any-hover: hover){
+    article:hover{
+        box-shadow: 10px 10px 50px #ddd;
+        background-color: #fbfdff;
+    }
+    h2 a:hover{
+        color:#777;
+    }
+}
 ::-webkit-scrollbar{
     display: none;
 }
@@ -29,7 +38,7 @@ html {
     scrollbar-width: none;
 }
 #blogs{
-    margin:30px auto;
+    margin:120px auto 0 auto;
     display:flex;
     flex-direction: column;
 }
@@ -40,10 +49,6 @@ article{
     height:180px;
     grid-template-rows: 70px 1fr;
     transition: box-shadow 400ms ease 0s, background-color 400ms ease 0s;
-}
-article:hover{
-    box-shadow: 10px 10px 50px #ddd;
-    background-color: #fbfdff;
 }
 article img{
     width:320px;
@@ -69,6 +74,8 @@ h2 a{
     transition: color 200ms ease 0s;
     color:rgba(7, 17, 27,0.8);
 }
-h2 a:hover{
-    color:#777;
+footer{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }

@@ -9,6 +9,10 @@
     }
 }
 
+#notes{
+    position: relative;
+    top:120px
+}
 article{
     margin:40px auto;
     background-color: #f3f5f7;

@@ -1,9 +1,7 @@
 :root{
     --min-x-padding: 20px;
-    --max-x-padding: 60px;
-    --max-width: 880px;
-    --content-padding-top: 10px;
-    --content-padding-bottom: 36px;
+    --max-x-padding: 80px;
+    --max-width: 860px;
 }
 @font-face {
     font-family: 'Noto Serif';
@@ -13,38 +11,32 @@
 }
 @media screen and (min-width: 0){
     #content{
-        margin: 0 auto 160px auto;
         width: calc(100vw - 20px * 2);
-        padding: var(--content-padding-top) 20px var(--content-padding-bottom) 20px;
+        padding-right: 20px;
+        padding-left:20px;
     }
     #comment{
         width: calc(100vw - 20px * 2);
         padding: 0 20px;
     }
 }
-@media screen and (min-width: calc(880px + 20px * 2)){
+@media screen and (min-width: calc(860px + 20px * 2)){
     #content{
         width: var(--max-width);
-        padding: var(--content-padding-top) calc(50vw - var(--max-width)/2) var(--content-padding-bottom) calc(50vw - var(--max-width)/2);
+        padding-right: calc(50vw - var(--max-width)/2);
+        padding-left:calc(50vw - var(--max-width)/2);
     }
     #comment{
         width: var(--max-width);
     }
 }
-@media screen and (min-width: calc(880px + 60px * 2)){
+@media screen and (min-width: calc(860px + 80px * 2)){
     #content{
-        width: var(--max-width);
-        margin: calc(50vw - var(--max-width)/2 - var(--max-x-padding)) auto 160px auto;
-        padding: var(--content-padding-top) var(--max-x-padding) var(--content-padding-bottom) var(--max-x-padding);
+        padding-right: var(--max-x-padding);
+        padding-left:var(--max-x-padding);
     }
     #comment{
         padding: 0 calc(50vw - var(--max-width)/2);
-    }
-}
-@media screen and (min-width: calc(880px + 60px * 2 + 50px * 2)){
-    #content{
-        width: var(--max-width);
-        margin: 50px auto 160px auto;
     }
 }
 ::-webkit-scrollbar{
@@ -55,9 +47,6 @@ html {
 }
 body{
     font-size: 18px;
-}
-div#main{
-    top:0;
 }
 #background{
     position: fixed;
@@ -106,15 +95,17 @@ div#main{
     max-width: calc(100% - 20px * 2);
     width: auto;
 }
-#imgMask{
-    display: none;
+#upper{
+    user-select: none;
+    z-index: 3;
     position: fixed;
-    width:100vw;
+    left: 0;
+    right: 0;
     top:0;
     bottom:0;
     background-color: rgba(0,0,0,0.5);
 }
-#imgMask img{
+#upper #viewer{
     display: block;
     position: absolute;
     margin:auto;
@@ -126,6 +117,13 @@ div#main{
     max-height: 100vh;
     width: auto;
     height: auto;
+}
+#upper #directory{
+    display: block;
+    margin:auto;
+    width: 500px;
+    height: 500px;
+    background-color: #fff;
 }
 /*#buttons{
     position: fixed;
@@ -169,10 +167,12 @@ div#main{
     transition: all 0ms;
 }*/
 /* Github Markdown Style Start*/
-div#content{
+#content{
+    margin: 0 auto;
+    padding-top: 20px;
+    padding-bottom: 36px;
     position: relative;
-    top: 300vh;
-    margin:0 auto;
+    top: 200vh;
     color:#111;
     background-color: rgba(256,256,256,0.9);
     line-height: 1.5;
@@ -230,8 +230,8 @@ div#content .language-math-wrap{
 /* Comment Style Start*/
 #comment{
     position: relative;
-    top:  300vh;
-    margin: 80px auto calc(150px + 300vh) auto;
+    top:  200vh;
+    margin: 80px auto calc(150px + 200vh) auto;
 }
 #newComment{
     display: grid;

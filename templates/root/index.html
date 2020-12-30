@@ -9,18 +9,21 @@
     <script src="/statics/js/main.js"></script>
 </head>
 <body>
-<header>
-    <div id="listControl" tabindex="0">选项</div>
+<nav>
+    <div id="listControl" tabindex="0">≡</div>
     <div id="list" class="hidden">
         <div>札记</div>
         <div onclick="window.open('/notes', '_self')">碎语</div>
         <div onclick="window.open('/about', '_self')">关于</div>
     </div>
-</header>
-<div id="main">
-<div id="blogs">
-    <!--<section><h2><a></a></h2><p></p></section>-->
-</div>
+</nav>
+<div id="basic">
+    <div id="blogs">
+        <!--<section><h2><a></a></h2><p></p></section>-->
+    </div>
+    <footer id="beian">
+        <p>鲁ICP备2020050398号</p>
+    </footer>
 </div>
 <script>
     const blogs = document.querySelector("div#blogs")

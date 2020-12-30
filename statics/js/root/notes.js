@@ -5,7 +5,7 @@ function initNotes(){
         method: 'GET',
         url:'/ajax/note/getAll',
         handleFunc:function(req){
-            const notesDOM = document.querySelector('div#main')
+            const notesDOM = document.querySelector('div#notes')
             notesJSON = JSON.parse(req.response)
             notesJSON.forEach( (v,i) => notesDOM.appendChild(createNote(notesJSON.length - i - 1)))
         }
