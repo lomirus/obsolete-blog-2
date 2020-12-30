@@ -22,7 +22,9 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	if constant.GinMode == "release" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	router = gin.Default()
 	ajax = router.Group("/ajax")
 	admin = router.Group("/admin")
@@ -49,7 +51,7 @@ func main() {
 	if constant.Domain == "localhost" {
 		err = router.Run(":8080")
 	} else {
-		err = router.RunTLS(":2333", "conf/anonym.ink_chain.crt", "conf/anonym.ink_key.key")
+		err = router.RunTLS(":443", "conf/anonym.ink_chain.crt", "conf/anonym.ink_key.key")
 	}
 	if err != nil {
 		log.Fatal(err)
