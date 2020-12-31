@@ -4,7 +4,7 @@ function updateImageUrl(){
     if (window.getComputedStyle(images[0]).display !== 'none') {
         window.removeEventListener('resize', updateImageUrl)
         images.forEach((v,i) =>
-            v.setAttribute('src', 'statics/images/blog/cover/' + (maxBlogId-i) + '.webp')
+            v.setAttribute('src', 'statics/images/cover/' + (maxBlogId-i) + '.webp')
         )
     }
 }

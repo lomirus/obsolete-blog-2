@@ -83,7 +83,7 @@ go mod init server
 go run main.go
 ```
 大功告成！
-![效果图](/statics/images/blog/1/1.gif)
+![效果图](1.gif)
 
 ## 胡扯笔记
 

@@ -36,6 +36,9 @@ function initImages(){
     viewer = document.querySelector("#viewer")
     for(let i = 0;i < images.length;i++){
         images[i].setAttribute('onselectstart',"return false")
+        let oldSrc = images[i].getAttribute('src')
+        let newSrc = '/statics/md/' + blog_id  + '/' + oldSrc
+        images[i].setAttribute('src',newSrc)
         images[i].onclick = function(){
             upper.style.display = 'flex'
             viewer.style.display = 'block'

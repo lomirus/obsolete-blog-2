@@ -21,7 +21,7 @@ func GetBlogAll() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var blogCards []Blog
 		for i := 1; ; i++ {
-			filePath := fmt.Sprintf("statics/md/blog/%d.md", i)
+			filePath := fmt.Sprintf("statics/md/%d/readme.md", i)
 			_, err := os.Stat(filePath)
 			if os.IsNotExist(err) {
 				break

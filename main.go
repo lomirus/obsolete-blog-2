@@ -33,11 +33,11 @@ func init() {
 	router.Static("/statics", "statics")
 }
 func main() {
-	router.GET("/", request.Homepage())
-	router.GET("/favicon.ico", request.Favicon())
-	router.GET("/blog/:id", request.Blog())
-	router.GET("/notes", request.Notes())
-	router.GET("/about", request.About())
+	router.GET("/", request.Homepage)
+	router.GET("/favicon.ico", request.Favicon)
+	router.GET("/blog/:id", request.Blog)
+	router.GET("/notes", request.Notes)
+	router.GET("/about", request.About)
 	ajax.GET("/blog/getAll", service.GetBlogAll())
 	ajax.GET("/comment/getAll", service.GetCommentAll(db))
 	ajax.POST("/comment/new", service.NewComment(db))

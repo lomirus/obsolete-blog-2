@@ -39,7 +39,7 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 		endLen = 2 // \r\n
 	}
 
-	filePath := fmt.Sprintf("statics/md/blog/%d.md", blogId)
+	filePath := fmt.Sprintf("statics/md/%d/readme.md", blogId)
 	inputFile, inputErr := os.Open(filePath)
 	if inputErr != nil {
 		log.Println(inputErr.Error())
@@ -100,7 +100,7 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 }
 func GetBlogNumber() (blogNum int) {
 	for blogNum = 1; ; blogNum++ {
-		filePath := fmt.Sprintf("statics/md/blog/%d.md", blogNum)
+		filePath := fmt.Sprintf("statics/md/%d/readme.md", blogNum)
 		_, err := os.Stat(filePath)
 		if os.IsNotExist(err) {
 			break
