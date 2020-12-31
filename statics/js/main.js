@@ -1,6 +1,6 @@
-let listControl, list
+let listControl, nav
 
-function getQuery(key){
+/*function getQuery(key){
     let query = {}
     let map = location.search.slice(1).split('&')
     for(let i in map){
@@ -24,34 +24,22 @@ function putQuery(map){
         query = query.slice(0, -1)
         history.replaceState(null, null, location.pathname + query + location.hash)
     }
-}
+}*/
 function initPanel(){
     listControl = document.querySelector("#listControl")
-    list = document.querySelector("#list")
-    let timer
+    nav = document.querySelector("nav")
     listControl.onclick = function(){
-        if (list.getAttribute('class') === 'visible') {
+        if (nav.getAttribute('class') === 'visible') {
             listControl.innerText = '≡'
-            list.setAttribute('class', 'hidden')
-            timer = setTimeout(function (){
-                list.style.display = 'none'
-            }, 500)
+            nav.setAttribute('class', 'hidden')
         } else {
             listControl.innerText = '×'
-            list.style.display = 'block'
-            clearTimeout(timer)
-            setTimeout(function(){
-                list.setAttribute('class', 'visible')
-            }, 0)
-
+            nav.setAttribute('class', 'visible')
         }
     }
     listControl.onblur = function (){
         listControl.innerText = '≡'
-        list.setAttribute('class', 'hidden')
-        timer = setTimeout(function (){
-            list.style.display = 'none'
-        }, 500)
+        nav.setAttribute('class', 'hidden')
     }
 }
 function ajaxReq({method, url, query, handleFunc}){

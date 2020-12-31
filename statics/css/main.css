@@ -20,40 +20,47 @@ body{
     background-color: #e3e5e7;
 }
 nav{
-    top: 30px;
-    left: 30px;
+    top: 45px;
+    left: 45px;
     z-index: 2;
     position: fixed;
 }
-nav #listControl{
+nav>#listControl{
     background-color: #fff;
     font-size: 30px;
     color: #1e1e1e;
     opacity: 0.75;
     outline: none;
+    margin: 0;
     transition: all ease 300ms;
 }
-nav #listControl:focus{
+nav>#listControl:focus{
     opacity: 1;
 }
-nav #list>div{
+nav>#list>div{
     background-color: #00965e;
     color: #fff;
+    margin-top: 15px;
     font-size: 20px;
     transition: transform ease 500ms, opacity ease 300ms;
 }
-nav #list.visible>div{
+nav.visible>#list>div{
     transform: scale(1) rotate(0deg);
     opacity: 1;
 }
-nav #list.hidden>div{
+nav.hidden{
+    height: 75px;
+}
+nav.hidden>#list{
+    pointer-events: none;
+}
+nav.hidden>#list>div{
     transform: scale(0) rotate(180deg);
     opacity: 0;
 }
 nav>#list>div, nav>#listControl{
     width: 75px;
     height: 75px;
-    margin: 15px;
     user-select: none;
     line-height: 75px;
     text-align: center;
