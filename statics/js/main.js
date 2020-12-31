@@ -1,4 +1,4 @@
-let listControl, nav
+let listControl, nav, basic
 
 /*function getQuery(key){
     let query = {}
@@ -28,6 +28,7 @@ function putQuery(map){
 function initPanel(){
     listControl = document.querySelector("#listControl")
     nav = document.querySelector("nav")
+    basic = document.querySelector("#basic")
     listControl.onclick = function(){
         if (nav.getAttribute('class') === 'visible') {
             listControl.innerText = '≡'
@@ -37,10 +38,12 @@ function initPanel(){
             nav.setAttribute('class', 'visible')
         }
     }
-    listControl.onblur = function (){
-        listControl.innerText = '≡'
-        nav.setAttribute('class', 'hidden')
-    }
+    basic.addEventListener('mousedown', function(e){
+        if(e.button === 0) {
+            listControl.innerText = '≡'
+            nav.setAttribute('class', 'hidden')
+        }
+    })
 }
 function ajaxReq({method, url, query, handleFunc}){
     if(query){
