@@ -1,34 +1,14 @@
-package service
+package module
 
 import (
 	"bufio"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"runtime"
-	"server/constant"
 )
-
-type Blog struct {
-	Title        string `json:"title"`
-	CreationTime string `json:"creationTime"`
-	ModifiedTime string `json:"modifiedTime"`
-	Preview      string `json:"preview"`
-	Content      string `json:"content"`
-}
-type Comment struct {
-	Id        int    `json:"id"`
-	BlogId    string `json:"blog_id"`
-	Content   string `json:"content"`
-	Likes     int    `json:"likes"`
-	Username  string `json:"username"`
-	AvatarUrl string `json:"avatar_url"`
-	Time      string `json:"time"`
-}
 
 func GetBlog(blogId int, getPreview bool) (blog Blog) {
 	const preLen = 320
@@ -107,22 +87,4 @@ func GetBlogNumber() (blogNum int) {
 		}
 	}
 	return blogNum - 1
-}
-func VerifyAdmin() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		key, err := c.Cookie("key")
-		if err != nil {
-			c.String(http.StatusOK, "Here's no flag.\nAll hackers leave please.")
-			c.Abort()
-			return
-		}
-		if key == "aJsq743EfRt1YWu9vSmzgi5PyBlrwUThekp8cQH0V6ojdAMn" {
-			c.Next()
-			return
-		} else {
-			c.String(http.StatusOK, "Here's no flag.\nAll hackers leave please.")
-			c.Abort()
-			return
-		}
-	}
 }

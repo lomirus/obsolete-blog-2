@@ -50,7 +50,7 @@ function initComments(){
     //加载所有评论
     ajaxReq({
         method: 'GET',
-        url:'/ajax/comment/getAll',
+        url:'/api/comment/all',
         query:{
             id: blog_id
         },
@@ -160,7 +160,7 @@ function submitComment(){
         localStorage.setItem('username', username)
         ajaxReq({
             method: 'POST',
-            url: '/ajax/comment/new',
+            url: '/api/comment/new',
             query:{
                 'content': text,
                 'username': username,
@@ -239,7 +239,7 @@ function createComment(index){
         const likes = this.parentElement.children[2]
         ajaxReq({
             method: 'POST',
-            url: '/ajax/comment/pro',
+            url: '/api/comment/pro',
             query:{
                 id: commentsData[index].id
             },
@@ -265,7 +265,7 @@ function createComment(index){
         const likes = this.parentElement.children[2]
         ajaxReq({
             method:'POST',
-            url: '/ajax/comment/con',
+            url: '/api/comment/con',
             query:{
                 id: commentsData[index].id
             },

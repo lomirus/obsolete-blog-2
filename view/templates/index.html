@@ -27,7 +27,7 @@
 </div>
 <script>
     const blogs = document.querySelector("div#blogs")
-    window.fetch('ajax/blog/getAll')
+    window.fetch('/api/blog/all')
         .then(res => res.json())
         .then(res => initBlogCards(res))
     initPanel()

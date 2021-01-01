@@ -3,7 +3,7 @@ function initNotes(){
     //加载所有评论
     ajaxReq({
         method: 'GET',
-        url:'/ajax/note/getAll',
+        url:'/api/note/all',
         handleFunc:function(req){
             const notesDOM = document.querySelector('div#notes')
             notesJSON = JSON.parse(req.response)

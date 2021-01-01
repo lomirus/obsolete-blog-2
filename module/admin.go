@@ -1,4 +1,4 @@
-package service
+package module
 
 import (
 	"github.com/gin-gonic/gin"
@@ -81,4 +81,22 @@ func SetCookie(c *gin.Context) {
 	c.SetCookie(name, value, 864000000, "/", constant.Domain, false, true)
 	c.String(http.StatusOK, "set cookie successfully")
 
+}
+func VerifyAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		key, err := c.Cookie("key")
+		if err != nil {
+			c.String(http.StatusOK, "Here's no flag.\nAll hackers leave please.")
+			c.Abort()
+			return
+		}
+		if key == "aJsq743EfRt1YWu9vSmzgi5PyBlrwUThekp8cQH0V6ojdAMn" {
+			c.Next()
+			return
+		} else {
+			c.String(http.StatusOK, "Here's no flag.\nAll hackers leave please.")
+			c.Abort()
+			return
+		}
+	}
 }
