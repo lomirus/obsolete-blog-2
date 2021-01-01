@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"html/template"
 	"log"
 	"math/rand"
 	"net/http"
@@ -53,7 +52,7 @@ func RBlog(c *gin.Context) {
 			"title":        blog.Title,
 			"creationTime": blog.CreationTime,
 			"modifiedTime": blog.ModifiedTime,
-			"content":      template.HTML(blog.Content),
+			"content":      blog.Content,
 			"id":           id,
 			"maxId":        maxId,
 		})

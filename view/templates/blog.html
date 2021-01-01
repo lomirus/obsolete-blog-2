@@ -9,6 +9,7 @@
     <script src="/statics/js/highlight.min.js"></script>
     <script src="/statics/js/root/blog.js"></script>
     <script src="/statics/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
           integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
           crossorigin="anonymous">
@@ -16,7 +17,8 @@
             integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
             crossorigin="anonymous"></script>
     <script>
-        const maxBlogId = {{.maxId}}
+        const blog_id = {{.id}}
+        const content = {{.content}}
         const title = {{.title}}
     </script>
 </head>
@@ -42,7 +44,7 @@
             <p><span>Last Modified at </span><time>{{.modifiedTime}}</time></p>
         </div>
     </div>
-    <div id="content">{{.content}}</div>
+    <div id="content"></div>
     <div id="comment">
         <div id="newComment">
             <img src="/statics/images/default.jpeg" />

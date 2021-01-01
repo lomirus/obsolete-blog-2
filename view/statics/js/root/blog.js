@@ -1,21 +1,27 @@
-const blog_id = parseInt(location.pathname.slice(6))
 let images, upper ,viewer, directory
 let commentsData, directoryData = []
 
 function initBlog(){
-    hljs.initHighlightingOnLoad();
+    initContent()
     initDirectory()
-    initFormulas()
-    initImages()
     initComments()
     initCommentEditor()
-    updateBackground()
+    initBackground()
     upper = document.querySelector("#upper")
     upper.onclick = function(){
         upper.style.display = 'none'
         viewer.style.display = 'none'
     }
-    window.addEventListener('scroll', updateBackground)
+}
+function initContent(){
+    let html = marked(content);
+    document.querySelector('#content').innerHTML = html
+    initCode()
+    initImages()
+    initFormulas()
+}
+function initCode(){
+    hljs.initHighlightingOnLoad();
 }
 function initFormulas(){
     const formulas = document.querySelectorAll(".language-math")
@@ -89,6 +95,10 @@ function initDirectory(){
             elements[i].innerHTML = `<a name="${name}" href="#${name}">${name}</a>`
         }
     }
+}
+function initBackground(){
+    updateBackground()
+    window.addEventListener('scroll', updateBackground)
 }
 /*function initDirectory(){
     const elements = document.querySelector("#content").children

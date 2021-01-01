@@ -3,7 +3,6 @@ package module
 import (
 	"bufio"
 	"fmt"
-	"github.com/russross/blackfriday"
 	"io"
 	"log"
 	"os"
@@ -74,7 +73,6 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 				break
 			}
 		}
-		blog.Content = string(blackfriday.MarkdownCommon([]byte(blog.Content)))
 	}
 	return blog
 }
