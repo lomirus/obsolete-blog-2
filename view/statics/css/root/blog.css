@@ -191,8 +191,16 @@ div#content img{
     border-radius: 8px;
     border: solid #eee 2px;
 }
-div#content a{
+div#content h1>a,
+div#content h2>a,
+div#content h3>a,
+div#content h4>a,
+div#content h5>a,
+div#content h6>a{
     color: #000;
+}
+div#content a{
+    color: #0366d6;
     text-decoration: none;
 }
 div#content a:hover{

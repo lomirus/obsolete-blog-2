@@ -1,4 +1,4 @@
-# 利用 Goroutine 优化求完美数的算法
+# 利用 Goroutine 优化求素数与完美数的算法
 
 初始创建于：***2020/12/29***
 
@@ -71,34 +71,174 @@ for i := 0; i < 48; i++ {
 wg.Wait()
 ```
 
-![](2.png)
+![](waitgroup.png)
 
 嗯，果然不出所料，CPU 直接满载。另外说个题外话，我之前也用 Javascript 的 Worker 写过一个通过多线程让 CPU 满载的[小程序](https://github.com/lomirus/chaos)来着，结果没想到第一次练习 WaitGroup 也搞了个异曲同工的东西。~~着实恶趣味~~
 
 ![小丑竟是我自己](clownismyself.jpg)
 
 
-## 求完美数算法的实现
+## Goroutine 对算法的优化
 
 如无特殊说明，以下代码运行的硬件环境均为 Legion R7000 (AMD Ryzen 5 4600H) ，且已开启性能模式，软件环境为 Windows 10 x64 20H2, Go 1.15；
 
-且为了使比较 CPU 利用率时更加明显，当截取 CPU 利用率的图片时将会把所求完美数的范围尽量放大，比如改为 2~10000000。
+且为了使比较 CPU 利用率时更加明显，当截取 CPU 利用率的图片时将会把所求完美数或质数的范围尽量放大，比如改为 2~10000000。
 
-### 完美数定义
+###  求素数算法的实现
+
+#### 暴力计算
+
+一开始先上个最简单的吧，~~结果导致我被 xxj 给批了一顿（悲~~
+
+![](iamlj.jpg)
+
+这里贴一下当时考试时交的答案：
+
+```go
+var primeNumbers = []int{2}
+for i := 3; i < n; i++ { // n = 200000
+	var ok = true
+	for j := range primeNumbers {
+		if i%primeNumbers[j] == 0 {
+			ok = false
+		}
+	}
+	if ok {
+		primeNumbers = append(primeNumbers, i)
+	}
+}
+```
+
+不过把这个这个称作暴力计算也不太准确，毕竟它在验证质数时好歹只是遍历了`primeNumbers`，~~要是直接遍历自然数那才叫暴力计算。~~以下是运算结果：
+
+``` 
+Repeat: 32
+Sum: 226339ms
+Avg: 7073ms
+```
+
+![](prime-cpu-1.png)
+
+#### 算法优化
+
+考虑到除了 `$$i` 本身以外，大于 `$$\sqrt i` 的数都不可能被 `$$i` 整除（），所以我们可以修改一下判断质数的循环终止条件；其次偶数不可能为质数，所以步长也可以设置为 2；另外由于我考试的时候有点儿脑抽，居然忘了在 `ok = false` 后面加 `break` ，也一并在这里补上吧：
+
+```go
+var primeNumbers = []int{2}
+for i := 3; i < n; i+=2 { // n = 200000
+	var ok = true
+	for j := 0; primeNumbers[j]*primeNumbers[j] <= i; j++ {
+		if i%primeNumbers[j] == 0 {
+			ok = false
+			break
+		}
+	}
+	if ok {
+		primeNumbers = append(primeNumbers, i)
+	}
+}
+```
+
+以下是运算结果，相比前面的代码简直快到飞起：
+
+```
+Repeat: 32
+Sum: 272ms
+Avg: 8ms
+```
+
+![](prime-cpu-2.png)
+
+#### 筛素数：埃拉托斯特尼筛法
+
+给出要筛数值的范围`$$n`，找出 `$$\sqrt n` 以内的素数 `$$p_1,p_2,...,p_k`。先用`$$2`去筛，即把`$$2`留下，把`$$2`的倍数剔除掉；再用下一个素数，也就是`$$3`筛，把`$$3`留下，把`$$3`的倍数剔除掉；接下去用下一个素数`$$5`筛，把`$$5`留下，把`$$5`的倍数剔除掉；不断重复下去......`$$^{[6]}`
+
+![](eratos.gif)
+
+#### 利用埃氏筛筛选素数算法的 Go 实现
+
+```go
+var numbers = make([]bool, n)
+for i := 2; i*i <= len(numbers); i++ {
+	for j := i + 1; j < len(numbers); j++ {
+		if j%i == 0 {
+			numbers[j] = true
+		}
+	}
+}
+```
+
+```
+Repeat: 32
+Sub: 418ms
+Sum: 13269ms
+Avg: 414ms
+```
+
+![](prime-cpu-eratos.png)
+
+由于不是 oi 爷，所以我对算法这方面不算很熟悉，线性筛啥的就在这里不提了（其实就是因为不懂555）。毕竟写这篇文章主要就是为了复习协程的，所以接下来直接进入正题了。
+
+![](itsoiye.jpg)
+
+#### 利用 goroutine 进行初步优化
+
+通过上面的 CPU 利用率我们可以看到，尽管程序的运算速度相比之前有了质的飞跃，但是程序在运行时的某一个时刻最多只能使得一个 CPU 线程的利用率达到接近 100%，因此便导致了资源的闲置浪费。接下来我们可以利用 goroutine，来进行一些多线程优化。因为我的 CPU 是 12 线程，所以设置了对应的管道为 12 个缓存。下面直接上代码：
+
+```go
+var numbers = make([]bool, n)
+	for i := range numbers {
+		numbers[i] = true
+	}
+
+	var thread = make(chan bool, 8)
+	for i := 0; i < 8; i++ {
+		thread <- true
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(int(math.Sqrt(float64(len(numbers)))) - 1)
+
+	for i := 2; i*i <= len(numbers); i++ {
+		<-thread
+		i := i
+		go func() {
+			for j := i + 1; j < len(numbers); j++ {
+				if j%i == 0 {
+					numbers[j] = false
+				}
+			}
+			thread <- true
+			wg.Done()
+		}()
+	}
+```
+```
+Repeat: 32
+Sub: 69ms
+Sum: 2193ms
+Avg: 68ms
+```
+![](prime-cpu-eratosgr.png)
+
+可以看到 CPU 这次又炸了（不过这次是有意义的炸），而且运行速度也的确明显缩短了许多。但是却依然还不如之前那个没有筛法 + 协程的那个，估计这主要是因为我算法优化太差的问题。所以接下来我们再用求完美数做一个🌰试试。
+
+### 求完美数算法的实现
+
+#### 完美数定义
 
 > 完全数（Perfect number），又称完美数或完备数，是一些特殊的自然数：它所有的真因子（即除了自身以外的约数）的和，恰好等于它本身，完全数不可能是楔形数、平方数、佩尔数或费波那契数。
 >
 >例如：第一个完全数是6，它有约数1、2、3、6，除去它本身6外，其余3个数相加， `$$1+2+3=6` ，恰好等于本身。第二个完全数是28，它有约数1、2、4、7、14、28，除去它本身28外，其余5个数相加，` $$1+2+4+7+14=28` ，也恰好等于本身。后面的数是496、8128。`$$^{[6]}`
 
-### 暴力遍历
+#### 暴力遍历
 
-一开始先上个最简单的吧。~~结果导致我被 xxj 给批了一顿（悲~~
+既然又是刚开始，那就和上面一样再上个最简单的吧。~~结果再次导致我被 xxj 给批了一顿（悲~~
 
 ![](iamlj.jpg)
 
 ```go
-const n = 123456
-for i := 2; i < n; i++ {
+for i := 2; i < n; i++ { // n = 200000
 	var factors = []int{1}
 	for j := 2; j < int(math.Sqrt(float64(i)))+1; j++ {
 		if i%j == 0 {
@@ -121,19 +261,68 @@ for i := 2; i < n; i++ {
 
 ``` 
 Repeat: 32
-Sum: 5089ms
-Avg: 159ms
+Sum: 10333ms
+Avg: 322ms
 ```
 
-![](1.png)
+![](perfect-cpu-1.png)
 
-### 利用 goroutine 进行初步优化
+#### 利用 goroutine 进行初步优化
 
-### blablabla
+与上同理，直接上代码：
+```go
+var thread = make(chan bool, 12)
+for i := 0; i < 12; i++ {
+	thread <- true
+}
 
-~~盲目并行不可取，特别是对我这种单核单线程的人类生物来说，所以待我先解决完最近几门期末考试再补这个~~
+var wg sync.WaitGroup
+wg.Add(n - 2)
 
-### 阿巴阿巴
+for i := 2; i < n; i++ {
+	i := i
+	<-thread
+	go func() {
+		var factors = []int{1}
+		for j := 2; j < int(math.Sqrt(float64(i)))+1; j++ {
+			if i%j == 0 {
+				factors = append(factors, j)
+				if j*j != i {
+					factors = append(factors, i/j)
+				}
+			}
+		}
+		var sum = 0
+		for j := range factors {
+			sum += factors[j]
+		}
+		if sum == i {
+			fmt.Println(i)
+		}
+		thread <- true
+		wg.Done()
+	}()
+}
+wg.Wait()
+```
+
+```
+Repeat: 32
+Sum: 2286ms
+Avg: 71ms
+```
+
+![](perfect-cpu-goroutine.png)
+
+可以看到，这次经过多线程优化，时间也将近缩短到了原来的三分之一。而相对应的，下面是 fjj 的官方答案在我电脑上的运行结果。`$$^{[8]}`
+
+![](answeroffjj.png)
+
+![](itsoiye.jpg)
+
+相比于她（oi爷）已经优化至 68ms 的算法，我代码的运行时间也算是相差无几了，毕竟就差 3ms~~（虽然我几乎看不怎么懂她的代码）~~。另外我也去看了一下其他利用 Goroutine 高并发特性来优化算法速率的文章，如 [go 素数筛，完美展现go并发！](https://zhuanlan.zhihu.com/p/91006073) ，貌似其中不少都是通过令每一个协程承担不同的任务来进行优化的，而我的方法则是简单粗暴地直接并发进行大量计算。但是从结果上来看，运行速度是几乎差不多的，所以实际上估计也是可行的。
+
+
 
 ## 参考资料
 
@@ -144,3 +333,5 @@ Avg: 159ms
 * [4] [线程 - 维基百科](https://zh.wikipedia.org/wiki/%E7%BA%BF%E7%A8%8B)
 * [5] [后端第三节课 - 2020 红岩课件 - 语雀](https://www.yuque.com/cxyuts/gyq5k1/mmsi2x)
 * [6] [完全数 - 维基百科](https://zh.wikipedia.org/wiki/%E5%AE%8C%E5%85%A8%E6%95%B0)
+* [7] [埃拉托斯特尼 - 维基百科](https://zh.wikipedia.org/wiki/%E5%9F%83%E6%8B%89%E6%89%98%E6%96%AF%E7%89%B9%E5%B0%BC%E7%AD%9B%E6%B3%95)
+* [8] [sarail - Ubuntu Pastebin](https://paste.ubuntu.com/p/YspfjZ8Wfz/)
