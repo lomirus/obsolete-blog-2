@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
-	"server/module/constant"
+	"server/constant"
 )
 
 type Blog struct {
@@ -39,7 +39,7 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 		endLen = 2 // \r\n
 	}
 
-	filePath := fmt.Sprintf("statics/md/%d/readme.md", blogId)
+	filePath := fmt.Sprintf("view/statics/md/%d/readme.md", blogId)
 	inputFile, inputErr := os.Open(filePath)
 	if inputErr != nil {
 		log.Println(inputErr.Error())
@@ -100,7 +100,7 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 }
 func GetBlogNumber() (blogNum int) {
 	for blogNum = 1; ; blogNum++ {
-		filePath := fmt.Sprintf("statics/md/%d/readme.md", blogNum)
+		filePath := fmt.Sprintf("view/statics/md/%d/readme.md", blogNum)
 		_, err := os.Stat(filePath)
 		if os.IsNotExist(err) {
 			break
@@ -108,19 +108,21 @@ func GetBlogNumber() (blogNum int) {
 	}
 	return blogNum - 1
 }
-func SetCookie() gin.HandlerFunc {
+func VerifyAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		name := c.Query("name")
-		if name == "" {
-			c.String(http.StatusOK, "name cannot be empty")
+		key, err := c.Cookie("key")
+		if err != nil {
+			c.String(http.StatusOK, "Here's no flag.\nAll hackers leave please.")
+			c.Abort()
 			return
 		}
-		value := c.Query("value")
-		if value == "" {
-			c.String(http.StatusOK, "value cannot be empty")
+		if key == "aJsq743EfRt1YWu9vSmzgi5PyBlrwUThekp8cQH0V6ojdAMn" {
+			c.Next()
+			return
+		} else {
+			c.String(http.StatusOK, "Here's no flag.\nAll hackers leave please.")
+			c.Abort()
 			return
 		}
-		c.SetCookie(name, value, 864000000, "/", constant.Domain, false, true)
-		c.String(http.StatusOK, "set cookie successfully")
 	}
 }
