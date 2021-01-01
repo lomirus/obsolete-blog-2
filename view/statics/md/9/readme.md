@@ -191,8 +191,8 @@ var numbers = make([]bool, n)
 		numbers[i] = true
 	}
 
-	var thread = make(chan bool, 8)
-	for i := 0; i < 8; i++ {
+	var thread = make(chan bool, 12)
+	for i := 0; i < 12; i++ {
 		thread <- true
 	}
 
