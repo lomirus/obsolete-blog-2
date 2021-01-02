@@ -68,7 +68,7 @@ func GetBlog(blogId int, getPreview bool) (blog Blog) {
 		//获取内容
 		for {
 			fileString, readerErr := fileReader.ReadString('\n')
-			blog.Content += fileString
+			blog.Markdown += fileString
 			if readerErr == io.EOF {
 				break
 			}

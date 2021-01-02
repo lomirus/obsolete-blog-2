@@ -52,7 +52,7 @@ func RBlog(c *gin.Context) {
 			"title":        blog.Title,
 			"creationTime": blog.CreationTime,
 			"modifiedTime": blog.ModifiedTime,
-			"content":      blog.Content,
+			"markdown":     blog.Markdown,
 			"id":           id,
 			"maxId":        maxId,
 		})

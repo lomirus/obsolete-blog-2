@@ -93,6 +93,7 @@ body{
 }
 #content img{
     max-width: calc(100% - 20px * 2);
+    user-select: none;
     width: auto;
 }
 #upper{
@@ -230,7 +231,7 @@ div#content blockquote p{
     margin: 18px 20px;
     color: #777777
 }
-div#content .language-math-wrap{
+div#content .block-formula{
     display: flex;
     justify-content: center;
 }

@@ -14,8 +14,10 @@ function initBlog(){
     }
 }
 function initContent(){
-    let html = marked(content);
-    document.querySelector('#content').innerHTML = html
+    markdown = markdown.replace(/!\[(.*)\]\((.*)\)/g,`![$1](/statics/md/${blog_id}/$2)`)
+    markdown = markdown.replace(/\$(.+?)\$/g,'<span class="inline-formula">$1</span>')
+    markdown = markdown.replace(/\$\$([\s\S]*?)\$\$/g,'<pre class="block-formula">$1</pre>')
+    document.querySelector('#content').innerHTML = marked(markdown);
     initCode()
     initImages()
     initFormulas()
@@ -24,27 +26,15 @@ function initCode(){
     hljs.initHighlightingOnLoad();
 }
 function initFormulas(){
-    const formulas = document.querySelectorAll(".language-math")
-    formulas.forEach(function(v){
-        v.parentElement.setAttribute("class", "language-math-wrap")
-        katex.render(v.innerText, v);
-    })
-    const codes = document.querySelectorAll("code")
-    codes.forEach(function(v){
-        if(v.innerText.slice(0,2) === "$$"){
-            v.setAttribute("class", "language-math")
-            katex.render(v.innerText.slice(2), v);
-        }
-    })
+    const blockFormulas = document.querySelectorAll(".block-formula")
+    blockFormulas.forEach(v => katex.render(v.innerText, v))
+    const inlineFormulas = document.querySelectorAll(".inline-formula")
+    inlineFormulas.forEach(v => katex.render(v.innerText, v))
 }
 function initImages(){
     images = document.querySelectorAll("div#content img")
     viewer = document.querySelector("#viewer")
     for(let i = 0;i < images.length;i++){
-        images[i].setAttribute('onselectstart',"return false")
-        let oldSrc = images[i].getAttribute('src')
-        let newSrc = '/statics/md/' + blog_id  + '/' + oldSrc
-        images[i].setAttribute('src',newSrc)
         images[i].onclick = function(){
             upper.style.display = 'flex'
             viewer.style.display = 'block'

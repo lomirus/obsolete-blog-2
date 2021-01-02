@@ -17,7 +17,7 @@ type Blog struct {
 	CreationTime string `json:"creationTime"`
 	ModifiedTime string `json:"modifiedTime"`
 	Preview      string `json:"preview"`
-	Content      string `json:"content"`
+	Markdown     string `json:"markdown"`
 }
 type Comment struct {
 	Id        int    `json:"id"`
