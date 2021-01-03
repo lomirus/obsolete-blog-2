@@ -31,15 +31,15 @@ func main() {
 	api.GET("/blog/all", module.AllBlog)
 	api.GET("/comment/all", module.AllComment)
 	api.POST("/comment/new", module.NewComment)
-	api.POST("/comment/pro", module.ProComment)
-	api.POST("/comment/con", module.ConComment)
+	api.GET("/comment/pro", module.ProComment)
+	api.GET("/comment/con", module.ConComment)
 	api.GET("/note/all", module.GetNoteAll)
 	admin.GET("/setCookie", module.SetCookie)
 	admin.GET("/note/new", module.VerifyAdmin(), module.NewNote)
 	admin.GET("/note/alt", module.VerifyAdmin(), module.AltNote)
 	var err error
 	if constant.Domain == "localhost" {
-		err = router.Run(":8080")
+		err = router.Run(":8081")
 	} else {
 		err = router.RunTLS(":443", "conf/anonym.ink_chain.crt", "conf/anonym.ink_key.key")
 	}

@@ -1,15 +1,15 @@
 let notesJSON
 function initNotes(){
     //加载所有评论
-    ajaxReq({
+    fetch('/api/note/all', {
         method: 'GET',
-        url:'/api/note/all',
-        handleFunc:function(req){
-            const notesDOM = document.querySelector('div#notes')
-            notesJSON = JSON.parse(req.response)
-            notesJSON.forEach( (v,i) => notesDOM.appendChild(createNote(notesJSON.length - i - 1)))
-        }
     })
+        .then(res => res.json())
+        .then(data => {
+            const notesDOM = document.querySelector('div#notes')
+            notesJSON = data
+            notesJSON.forEach( (v,i) => notesDOM.appendChild(createNote(notesJSON.length - i - 1)))
+        })
 }
 function createNote(index){
     let note = document.createElement('article')

@@ -21,7 +21,7 @@ type Blog struct {
 }
 type Comment struct {
 	Id        int    `json:"id"`
-	BlogId    string `json:"blog_id"`
+	BlogId    int    `json:"blog_id"`
 	Content   string `json:"content"`
 	Likes     int    `json:"likes"`
 	Username  string `json:"username"`

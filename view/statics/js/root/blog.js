@@ -1,84 +1,83 @@
-let images, upper ,viewer, directory
-let commentsData, directoryData = []
+let images, upper, viewer, directory
+let commentsData = [], directoryData = []
 
-function initBlog(){
+function initBlog() {
     initContent()
     initDirectory()
     initComments()
     initCommentEditor()
     initBackground()
     upper = document.querySelector("#upper")
-    upper.onclick = function(){
+    upper.onclick = function () {
         upper.style.display = 'none'
         viewer.style.display = 'none'
     }
 }
-function initContent(){
-    markdown = markdown.replace(/!\[(.*)\]\((.*)\)/g,`![$1](/statics/md/${blog_id}/$2)`)
-    markdown = markdown.replace(/\$(.+?)\$/g,'<span class="inline-formula">$1</span>')
-    markdown = markdown.replace(/\$\$([\s\S]*?)\$\$/g,'<pre class="block-formula">$1</pre>')
+function initContent() {
+    markdown = markdown.replace(/!\[(.*)\]\((.*)\)/g, `![$1](/statics/md/${blog_id}/$2)`)
+    markdown = markdown.replace(/\$(.+?)\$/g, '<span class="inline-formula">$1</span>')
+    markdown = markdown.replace(/\$\$([\s\S]*?)\$\$/g, '<pre class="block-formula">$1</pre>')
     document.querySelector('#content').innerHTML = marked(markdown);
     initCode()
     initImages()
     initFormulas()
 }
-function initCode(){
+function initCode() {
     hljs.initHighlightingOnLoad();
 }
-function initFormulas(){
+function initFormulas() {
     const blockFormulas = document.querySelectorAll(".block-formula")
     blockFormulas.forEach(v => katex.render(v.innerText, v))
     const inlineFormulas = document.querySelectorAll(".inline-formula")
     inlineFormulas.forEach(v => katex.render(v.innerText, v))
 }
-function initImages(){
+function initImages() {
     images = document.querySelectorAll("div#content img")
     viewer = document.querySelector("#viewer")
-    for(let i = 0;i < images.length;i++){
-        images[i].onclick = function(){
+    for (let i = 0; i < images.length; i++) {
+        images[i].onclick = function () {
             upper.style.display = 'flex'
             viewer.style.display = 'block'
-            viewer.setAttribute('src',images[i].getAttribute('src'))
+            viewer.setAttribute('src', images[i].getAttribute('src'))
         }
     }
 }
-function initComments(){
+function initComments() {
     //加载所有评论
-    ajaxReq({
-        method: 'GET',
-        url:'/api/comment/all',
-        query:{
-            id: blog_id
-        },
-        handleFunc:function(req){
+    fetch(query('/api/comment/all', {
+        id: blog_id
+    }), {
+        method: 'GET'
+    })
+        .then(data => data.json())
+        .then(res => {
             const commentsDOM = document.querySelector('div#comments')
-            commentsData = JSON.parse(req.response)
-            if(commentsData.length === 0){
+            commentsData = res
+            if (commentsData.length === 0) {
                 commentsDOM.style.display = "none"
             } else {
-                commentsData.forEach( (v,i) => commentsDOM.appendChild(createComment(i)))
+                commentsData.forEach((v, i) => commentsDOM.appendChild(createComment(i)))
             }
-        }
-    })
+        })
 }
-function initCommentEditor(){
+function initCommentEditor() {
     //初始化提交评论功能
     const newCommentButton = document.querySelector('div#newComment>button')
-    newCommentButton.addEventListener('click',submitComment)
+    newCommentButton.addEventListener('click', submitComment)
     //初始化评论编辑区域的头像与用户名
     const newCommentUsername = document.querySelector('div#newComment>input')
     const newCommentAvatar = document.querySelector('div#newComment>img')
     newCommentUsername.value = localStorage.getItem('username')
-    if(localStorage.getItem('avatar')){
+    if (localStorage.getItem('avatar')) {
         newCommentAvatar.setAttribute('src', localStorage.getItem('avatar'))
     }
     newCommentAvatar.addEventListener('click', changeAvatar)
 }
-function initDirectory(){
+function initDirectory() {
     const elements = document.querySelector("#content").children
     directory = document.querySelector("#directory")
-    for(let i in elements){
-        if(["h2", "h3", "h4", "h5", "h6"].indexOf(elements[i].localName) !== -1) {
+    for (let i in elements) {
+        if (["h2", "h3", "h4", "h5", "h6"].indexOf(elements[i].localName) !== -1) {
             const label = parseInt(elements[i].localName[1])
             const name = elements[i].innerText
             directoryData.push([label, name])
@@ -86,7 +85,7 @@ function initDirectory(){
         }
     }
 }
-function initBackground(){
+function initBackground() {
     updateBackground()
     window.addEventListener('scroll', updateBackground)
 }
@@ -146,56 +145,95 @@ function initBackground(){
     console.log('\n')
 }*/
 
-function submitComment(){
+function submitComment() {
     const newCommentName = document.querySelector('div#newComment>input')
     const newCommentAvatar = document.querySelector('div#newComment>img')
     const newCommentText = document.querySelector('div#newComment>textarea')
     const text = newCommentText.value
-    const username = newCommentName.value === ''? "Anonymous" : newCommentName.value
-    const avatar = newCommentAvatar.src
-    if(text === ''){
+    if (text === '') {
         alert('内容不可为空')
-    } else {
-        localStorage.setItem('avatar', avatar)
-        localStorage.setItem('username', username)
-        ajaxReq({
-            method: 'POST',
-            url: '/api/comment/new',
-            query:{
-                'content': text,
-                'username': username,
-                'blog_id': blog_id,
-                'avatar_url': escape(avatar)
-            },
-            handleFunc: function(res){
-                let commentJSON = {
-                    "id": res.response,
-                    "content": text,
-                    "time": getNowTime(),
-                    "username": username,
-                    "avatar_url": avatar,
-                    "likes": 0,
-                }
-                const commentsDOM = document.querySelector('div#comments')
-                commentsData.push(commentJSON)
-                commentsDOM.appendChild(createComment(commentsData.length - 1))
-                commentsDOM.style.display = "block"
-                Notification.requestPermission().then(function(permission){
-                    if (permission === 'granted')
-                        new Notification("You've sent your comment", {body: text}); // 显示通知
-                    else if (permission === 'denied')
-                        alert("You've sent your comment."); // 显示通知
-                })
-            }})
+        return
     }
-
+    const username = newCommentName.value === '' ? "匿名用户" : newCommentName.value
+    const avatar = newCommentAvatar.src
+    localStorage.setItem('username', newCommentName.value)
+    localStorage.setItem('avatar', avatar)
+    fetch('/api/comment/new', {
+        method: 'POST',
+        body: JSON.stringify({
+            'content': text,
+            'username': username,
+            'blog_id': blog_id,
+            'avatar_url': avatar
+        })
+    })
+        .then(res => res.json()
+            .then(data => {
+                if (res.ok) {
+                    return data
+                } else {
+                    return Promise.reject(data)
+                }
+            })
+        )
+        .then(res => {
+            let commentJSON = {
+                "id": res.id,
+                "content": text,
+                "time": getNowTime(),
+                "username": username,
+                "avatar_url": avatar,
+                "likes": 0,
+            }
+            const commentsDOM = document.querySelector('div#comments')
+            commentsData.push(commentJSON)
+            commentsDOM.appendChild(createComment(commentsData.length - 1))
+            commentsDOM.style.display = "block"
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted')
+                    new Notification("提交评论成功", { body: text });
+                else if (permission === 'denied')
+                    alert("提交评论成功");
+            })
+        })
+        .catch(data => {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted')
+                    new Notification("提交评论失败", { body: data.error });
+                else if (permission === 'denied')
+                    alert(data.error);
+            })
+        })
 }
-function changeAvatar(){
-    const newAvatarUrl = prompt("Please input the url of new avatar:")
+function changeAvatar() {
+    const newAvatarUrl = prompt("请输入新头像的地址:")
     if (newAvatarUrl == null) return
-    this.setAttribute('src', newAvatarUrl)
+    new Promise((resolve, reject) => {
+        const avatar = new Image()
+        avatar.src = newAvatarUrl
+        avatar.onload = resolve
+        avatar.onerror = reject
+    })
+        .then(() => {
+            this.setAttribute('src', newAvatarUrl)
+            localStorage.setItem('avatar', newAvatarUrl)
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted')
+                    new Notification("更改头像成功")
+                else
+                    alert("更改头像成功")
+            })
+        })
+        .catch(() => {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted')
+                    new Notification("更改头像失败", {body: "头像地址无效"})
+                else
+                    alert("更改头像失败：头像地址无效")
+            })
+        })
 }
-function createComment(index){
+function createComment(index) {
     let comment = document.createElement('div')
     let avatar = document.createElement('img')
     let main = document.createElement('div')
@@ -225,7 +263,7 @@ function createComment(index){
 
     username.innerText = commentsData[index].username
     content.innerText = commentsData[index].content
-    if(commentsData[index].likes >= 0){
+    if (commentsData[index].likes >= 0) {
         likes.innerText = '❤️'
     } else {
         likes.innerText = '💔️'
@@ -235,15 +273,14 @@ function createComment(index){
     con.innerText = '👎'
     time.innerText = commentsData[index].time
 
-    pro.addEventListener('click', function (event){
+    pro.addEventListener('click', function (event) {
         const likes = this.parentElement.children[2]
-        ajaxReq({
-            method: 'POST',
-            url: '/api/comment/pro',
-            query:{
-                id: commentsData[index].id
-            },
-            handleFunc: function(){
+        fetch(query('/api/comment/pro', {
+            id: commentsData[index].id
+        }), {
+            method: 'GET',
+        }).then(res => res.json())
+            .then(function () {
                 const oldLikes = parseInt(likes.getAttribute('likes'))
                 likes.setAttribute('likes', oldLikes + 1)
                 likes.innerText =
@@ -258,20 +295,19 @@ function createComment(index){
                             parseInt(likes.getAttribute('likes')) >= 0 ? '❤️' : '💔️'
                     }, 120)
                 }, 120)
-            }
-        })
+            })
     })
-    con.addEventListener('click', function (){
+    con.addEventListener('click', function () {
         const likes = this.parentElement.children[2]
-        ajaxReq({
-            method:'POST',
-            url: '/api/comment/con',
-            query:{
-                id: commentsData[index].id
-            },
-            handleFunc: function(){
+        fetch(query('/api/comment/con', {
+            id: commentsData[index].id
+        }), {
+
+            method: 'GET',
+        }).then(res => res.json())
+            .then(function () {
                 const oldLikes = parseInt(likes.getAttribute('likes'))
-                likes.setAttribute('likes',oldLikes - 1)
+                likes.setAttribute('likes', oldLikes - 1)
                 likes.innerText =
                     parseInt(likes.getAttribute('likes')) >= 0 ? '💓' : '🖤'
                 likes.style.transform = "scale(1.2)"
@@ -280,8 +316,7 @@ function createComment(index){
                     likes.innerText =
                         parseInt(likes.getAttribute('likes')) >= 0 ? '❤️' : '💔️'
                 }, 240)
-            }
-        })
+            })
     })
 
     operation.appendChild(pro)
@@ -298,7 +333,7 @@ function createComment(index){
 
     return comment
 }
-function getNowTime(){
+function getNowTime() {
     let now = new Date()
     let year = now.getFullYear()
     let month = now.getMonth()
@@ -314,22 +349,22 @@ function getNowTime(){
     now = `${year}-${month}-${date} ${hour}:${minute}:${second}`
     return now
 }
-function showDirectory(){
+function showDirectory() {
     upper.style.display = 'flex'
     directory.style.display = 'block'
-    directoryData.forEach(function(v){
-        console.log(strMultiply('  ', v[0]-2) + v[1])
+    directoryData.forEach(function (v) {
+        console.log(strMultiply('  ', v[0] - 2) + v[1])
     })
 }
-function updateBackground(){
+function updateBackground() {
     const height = document.documentElement.clientHeight
     const top = document.documentElement.scrollTop
     const mask = document.querySelector('#background>.mask')
     const cover = document.querySelector('#cover')
-    if(top < height * 0.5){
+    if (top < height * 0.5) {
         mask.style.opacity = (top / height * 0.4).toString()
         cover.style.opacity = "1"
-    } else if(top < height) {
+    } else if (top < height) {
         mask.style.opacity = "0.2"
         cover.style.opacity = (2 - top / height * 2).toString()
     } else {
@@ -337,9 +372,9 @@ function updateBackground(){
         cover.style.opacity = "0"
     }
 }
-function strMultiply(str='', time=1){
+function strMultiply(str = '', time = 1) {
     let newStr = ''
-    for(let i = 0; i < time; i++){
+    for (let i = 0; i < time; i++) {
         newStr += str
     }
     return newStr

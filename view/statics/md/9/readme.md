@@ -2,7 +2,7 @@
 
 初始创建于：***2020/12/29***
 
-最后编辑于：***2021/01/01***
+最后编辑于：***2021/01/02***
 
 ## 基础概念辨析
 
@@ -158,7 +158,7 @@ Avg: 8ms
 #### 利用埃氏筛筛选素数算法的 Go 实现
 
 ```go
-var numbers = make([]bool, n)
+var numbers = make([]bool, n) // n = 200000
 for i := 2; i*i <= len(numbers); i++ {
 	for j := i + 1; j < len(numbers); j++ {
 		if j%i == 0 {
@@ -186,32 +186,32 @@ Avg: 414ms
 通过上面的 CPU 利用率我们可以看到，尽管程序的运算速度相比之前有了质的飞跃，但是程序在运行时的某一个时刻最多只能使得一个 CPU 线程的利用率达到接近 100%，因此便导致了资源的闲置浪费。接下来我们可以利用 goroutine，来进行一些多线程优化。因为我的 CPU 是 12 线程，所以设置了对应的管道为 12 个缓存。下面直接上代码：
 
 ```go
-var numbers = make([]bool, n)
-	for i := range numbers {
-		numbers[i] = true
-	}
+var numbers = make([]bool, n) // n = 200000
+for i := range numbers {
+	numbers[i] = true
+}
 
-	var thread = make(chan bool, 12)
-	for i := 0; i < 12; i++ {
-		thread <- true
-	}
+var thread = make(chan bool, 12)
+for i := 0; i < 12; i++ {
+	thread <- true
+}
 
-	var wg sync.WaitGroup
-	wg.Add(int(math.Sqrt(float64(len(numbers)))) - 1)
+var wg sync.WaitGroup
+wg.Add(int(math.Sqrt(float64(len(numbers)))) - 1)
 
-	for i := 2; i*i <= len(numbers); i++ {
-		<-thread
-		i := i
-		go func() {
-			for j := i + 1; j < len(numbers); j++ {
-				if j%i == 0 {
-					numbers[j] = false
-				}
+for i := 2; i*i <= len(numbers); i++ {
+	<-thread
+	i := i
+	go func() {
+		for j := i + 1; j < len(numbers); j++ {
+			if j%i == 0 {
+				numbers[j] = false
 			}
-			thread <- true
-			wg.Done()
-		}()
-	}
+		}
+		thread <- true
+		wg.Done()
+	}()
+}
 ```
 ```
 Repeat: 32
