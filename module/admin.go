@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"server/constant"
+	"strconv"
 	"time"
 )
 
@@ -66,6 +67,27 @@ func AltNote(c *gin.Context) {
 	}
 	c.String(200, "Note was altered successfully")
 
+}
+func GetNote(c *gin.Context) {
+	var idStr = c.Query("id")
+	if idStr == "" {
+		c.String(200, "id cannot be empty")
+		return
+	}
+	idInt, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.String(200, "id cannot be converted to integer")
+		return
+	}
+	var note Note
+	note.Id = idInt
+	row := db.QueryRow("select `content`,`note_addr`,`note_time` from notes where id=?", note.Id)
+	err = row.Scan(&note.Content, &note.NoteAddr, &note.NoteTime)
+	if err != nil {
+		c.String(200, err.Error())
+		return
+	}
+	c.JSON(200, note)
 }
 func SetCookie(c *gin.Context) {
 	name := c.Query("name")

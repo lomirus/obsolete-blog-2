@@ -37,6 +37,7 @@ func main() {
 	admin.GET("/setCookie", module.SetCookie)
 	admin.GET("/note/new", module.VerifyAdmin(), module.NewNote)
 	admin.GET("/note/alt", module.VerifyAdmin(), module.AltNote)
+	admin.GET("/note/get", module.VerifyAdmin(), module.GetNote)
 	var err error
 	if constant.Domain == "localhost" {
 		err = router.Run(":8081")
